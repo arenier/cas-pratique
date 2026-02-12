@@ -22,13 +22,15 @@ Demarrer le conteneur PostgreSQL :
 docker compose up -d
 ```
 
-La base de donnees sera accessible sur `localhost:5432` avec les credentials suivants dans un fichier .env du dépôt front :
+La base de donnees sera accessible sur `localhost:5432` avec les credentials suivants dans un fichier .env du dépôt :
 
+```
 DATABASE_HOST=localhost
 DATABASE_PORT=5432
 DATABASE_USER=postgres
 DATABASE_PASSWORD=postgres
 DATABASE_NAME=cas_pratique
+```
 
 Pour arreter la base de donnees :
 
@@ -47,7 +49,7 @@ Le serveur NestJS demarre par defaut sur `http://localhost:3000`.
 ## Lancer le frontend
 
 ```sh
-npx nx serve @org/frontend
+npx nx serve frontend
 ```
 
 L'application React demarre par defaut sur `http://localhost:4200`.
@@ -59,7 +61,7 @@ L'application React demarre par defaut sur `http://localhost:4200`.
 npx nx build backend
 
 # Build du frontend
-npx nx build @org/frontend
+npx nx build frontend
 
 # Build des deux en parallele
 npx nx run-many -t build
