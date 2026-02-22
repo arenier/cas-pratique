@@ -1,5 +1,6 @@
+import { isRole, type Role } from '@repo/backend/kernel';
+
 import { InvalidRoleAssignment } from '../errors/invalid-role-assignment';
-import { Role, isRole } from '@backend/kernel';
 
 /**
  * Parse and validate a Role.

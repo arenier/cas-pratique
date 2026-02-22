@@ -1,8 +1,8 @@
+import { type ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { describe, expect, it } from 'vitest';
-import { UnauthorizedException } from '@nestjs/common';
+
 import { AuthGuard } from './auth.guard';
-import { AuthenticatedRequest } from './auth-user';
-import { ExecutionContext } from '@nestjs/common';
+import type { AuthenticatedRequest } from './auth-user';
 
 const createContext = (request: AuthenticatedRequest): ExecutionContext =>
   ({
@@ -36,9 +36,7 @@ describe('AuthGuard', () => {
     const guard = new AuthGuard();
     const request = { headers: {} } as AuthenticatedRequest;
 
-    expect(() => guard.canActivate(createContext(request))).toThrow(
-      UnauthorizedException
-    );
+    expect(() => guard.canActivate(createContext(request))).toThrow(UnauthorizedException);
   });
 
   it('rejects invalid role header', () => {
@@ -51,8 +49,6 @@ describe('AuthGuard', () => {
       },
     } as any as AuthenticatedRequest;
 
-    expect(() => guard.canActivate(createContext(request))).toThrow(
-      UnauthorizedException
-    );
+    expect(() => guard.canActivate(createContext(request))).toThrow(UnauthorizedException);
   });
 });

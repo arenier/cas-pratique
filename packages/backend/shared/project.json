@@ -4,6 +4,12 @@
   "root": "packages/backend/shared",
   "sourceRoot": "packages/backend/shared/src",
   "targets": {
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "biome check --diagnostic-level=warn packages/backend/shared"
+      }
+    },
     "test": {
       "executor": "@nx/vitest:vitest",
       "outputs": ["{projectRoot}/coverage"],

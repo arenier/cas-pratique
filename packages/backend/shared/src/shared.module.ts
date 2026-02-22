@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
+
 import { AuthGuard } from './auth/auth.guard';
-import { TenancyGuard } from './tenancy/tenancy.guard';
-import { RolesGuard } from './rbac/roles.guard';
 import { DomainExceptionFilter } from './errors/domain-exception.filter';
+import { RolesGuard } from './rbac/roles.guard';
+import { TenancyGuard } from './tenancy/tenancy.guard';
 
 @Module({
   providers: [AuthGuard, TenancyGuard, RolesGuard, DomainExceptionFilter],

@@ -1,11 +1,13 @@
 import {
-  CanActivate,
-  ExecutionContext,
+  type CanActivate,
+  type ExecutionContext,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { AuthenticatedRequest } from './auth-user';
-import { isRole } from '@backend/kernel';
+
+import { isRole } from '@repo/backend/kernel';
+
+import type { AuthenticatedRequest } from './auth-user';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

@@ -1,10 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { Action } from './action';
+
 import { ConcurrencyConflict } from '../errors/concurrency-conflict';
 import { InvalidActionStatus } from '../errors/invalid-action-status';
 import { InvalidStateTransition } from '../errors/invalid-state-transition';
 import { UnauthorizedActionDeletion } from '../errors/unauthorized-action-deletion';
 import { UnauthorizedTransition } from '../errors/unauthorized-transition';
+import { Action } from './action';
 
 const baseParams = {
   id: 'action-1',
@@ -63,7 +64,7 @@ describe('Action', () => {
         version: 1,
         createdAt: at('2026-02-21T09:00:00.000Z'),
         updatedAt: at('2026-02-21T09:30:00.000Z'),
-      })
+      }),
     ).toThrow(InvalidActionStatus);
   });
 
@@ -118,7 +119,7 @@ describe('Action', () => {
     const action = createAction();
 
     expect(() => action.start({ role: 'USER', expectedVersion: 1 })).toThrow(
-      UnauthorizedTransition
+      UnauthorizedTransition,
     );
   });
 
@@ -129,7 +130,7 @@ describe('Action', () => {
     action.requestValidation({ role: 'ADMIN', expectedVersion: 2 });
 
     expect(() => action.complete({ role: 'MANAGER', expectedVersion: 3 })).toThrow(
-      UnauthorizedTransition
+      UnauthorizedTransition,
     );
   });
 
@@ -137,16 +138,16 @@ describe('Action', () => {
     const action = createAction();
 
     expect(() => action.delete({ role: 'MANAGER', expectedVersion: 1 })).toThrow(
-      UnauthorizedActionDeletion
+      UnauthorizedActionDeletion,
     );
   });
 
   it('rejects invalid state transitions', () => {
     const action = createAction();
 
-    expect(() =>
-      action.requestValidation({ role: 'MANAGER', expectedVersion: 1 })
-    ).toThrow(InvalidStateTransition);
+    expect(() => action.requestValidation({ role: 'MANAGER', expectedVersion: 1 })).toThrow(
+      InvalidStateTransition,
+    );
   });
 
   it('rejects deletion when already deleted', () => {
@@ -155,7 +156,7 @@ describe('Action', () => {
     action.delete({ role: 'ADMIN', expectedVersion: 1 });
 
     expect(() => action.delete({ role: 'ADMIN', expectedVersion: 2 })).toThrow(
-      InvalidStateTransition
+      InvalidStateTransition,
     );
   });
 
@@ -163,7 +164,7 @@ describe('Action', () => {
     const action = createAction();
 
     expect(() => action.start({ role: 'MANAGER', expectedVersion: 2 })).toThrow(
-      ConcurrencyConflict
+      ConcurrencyConflict,
     );
 
     expect(action.state).toBe('TODO');

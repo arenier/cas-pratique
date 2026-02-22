@@ -1,5 +1,6 @@
+import { type ArgumentsHost, BadRequestException } from '@nestjs/common';
 import { describe, expect, it, vi } from 'vitest';
-import { ArgumentsHost, BadRequestException } from '@nestjs/common';
+
 import { DomainExceptionFilter } from './domain-exception.filter';
 
 const createHost = () => {

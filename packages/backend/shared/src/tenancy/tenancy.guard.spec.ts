@@ -1,8 +1,8 @@
+import { type ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { describe, expect, it } from 'vitest';
-import { UnauthorizedException } from '@nestjs/common';
+
+import type { AuthenticatedRequest } from '../auth/auth-user';
 import { TenancyGuard } from './tenancy.guard';
-import { AuthenticatedRequest } from '../auth/auth-user';
-import { ExecutionContext } from '@nestjs/common';
 
 const createContext = (request: AuthenticatedRequest): ExecutionContext =>
   ({
@@ -29,8 +29,6 @@ describe('TenancyGuard', () => {
     const guard = new TenancyGuard();
     const request = { authUser: undefined } as AuthenticatedRequest;
 
-    expect(() => guard.canActivate(createContext(request))).toThrow(
-      UnauthorizedException
-    );
+    expect(() => guard.canActivate(createContext(request))).toThrow(UnauthorizedException);
   });
 });

@@ -1,5 +1,6 @@
 import { SetMetadata } from '@nestjs/common';
-import { Role } from '@backend/kernel';
+
+import type { Role } from '@repo/backend/kernel';
 
 export const ROLES_KEY = 'roles';
 

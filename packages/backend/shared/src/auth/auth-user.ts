@@ -1,5 +1,6 @@
 import type { Request } from 'express';
-import { Role } from '@backend/kernel';
+
+import type { Role } from '@repo/backend/kernel';
 
 export interface AuthUser {
   userId: string;

@@ -1,13 +1,18 @@
 import 'reflect-metadata';
 
-import { describe, expect, it } from 'vitest';
-import { ExecutionContext, ForbiddenException, UnauthorizedException } from '@nestjs/common';
+import { type ExecutionContext, ForbiddenException, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { RolesGuard } from './roles.guard';
-import { AuthenticatedRequest } from '../auth/auth-user';
-import { ROLES_KEY } from './roles.decorator';
+import { describe, expect, it } from 'vitest';
 
-const createContext = (request: AuthenticatedRequest, handler: unknown, clazz: unknown): ExecutionContext =>
+import type { AuthenticatedRequest } from '../auth/auth-user';
+import { ROLES_KEY } from './roles.decorator';
+import { RolesGuard } from './roles.guard';
+
+const createContext = (
+  request: AuthenticatedRequest,
+  handler: unknown,
+  clazz: unknown,
+): ExecutionContext =>
   ({
     switchToHttp: () => ({
       getRequest: () => request,
@@ -19,7 +24,9 @@ const createContext = (request: AuthenticatedRequest, handler: unknown, clazz: u
 describe('RolesGuard', () => {
   it('allows when no roles metadata is set', () => {
     const guard = new RolesGuard(new Reflector());
-    const request = { authUser: { userId: 'u', organizationId: 'o', role: 'USER' } } as AuthenticatedRequest;
+    const request = {
+      authUser: { userId: 'u', organizationId: 'o', role: 'USER' },
+    } as AuthenticatedRequest;
     const handler = () => undefined;
     const clazz = class {};
 
@@ -32,9 +39,9 @@ describe('RolesGuard', () => {
     const clazz = class {};
     Reflect.defineMetadata(ROLES_KEY, ['ADMIN'], handler);
 
-    expect(() => guard.canActivate(createContext({} as AuthenticatedRequest, handler, clazz))).toThrow(
-      UnauthorizedException
-    );
+    expect(() =>
+      guard.canActivate(createContext({} as AuthenticatedRequest, handler, clazz)),
+    ).toThrow(UnauthorizedException);
   });
 
   it('rejects when role is insufficient', () => {
@@ -43,9 +50,13 @@ describe('RolesGuard', () => {
     const clazz = class {};
     Reflect.defineMetadata(ROLES_KEY, ['ADMIN'], handler);
 
-    const request = { authUser: { userId: 'u', organizationId: 'o', role: 'USER' } } as AuthenticatedRequest;
+    const request = {
+      authUser: { userId: 'u', organizationId: 'o', role: 'USER' },
+    } as AuthenticatedRequest;
 
-    expect(() => guard.canActivate(createContext(request, handler, clazz))).toThrow(ForbiddenException);
+    expect(() => guard.canActivate(createContext(request, handler, clazz))).toThrow(
+      ForbiddenException,
+    );
   });
 
   it('allows when role is authorized', () => {
@@ -54,7 +65,9 @@ describe('RolesGuard', () => {
     const clazz = class {};
     Reflect.defineMetadata(ROLES_KEY, ['ADMIN', 'MANAGER'], handler);
 
-    const request = { authUser: { userId: 'u', organizationId: 'o', role: 'MANAGER' } } as AuthenticatedRequest;
+    const request = {
+      authUser: { userId: 'u', organizationId: 'o', role: 'MANAGER' },
+    } as AuthenticatedRequest;
 
     expect(guard.canActivate(createContext(request, handler, clazz))).toBe(true);
   });

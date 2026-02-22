@@ -1,5 +1,11 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
-import { AuthenticatedRequest } from '../auth/auth-user';
+import {
+  type CanActivate,
+  type ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+
+import type { AuthenticatedRequest } from '../auth/auth-user';
 
 @Injectable()
 export class TenancyGuard implements CanActivate {

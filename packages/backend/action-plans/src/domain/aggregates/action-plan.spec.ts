@@ -1,8 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ActionPlan } from './action-plan';
+
 import { OrganizationMismatch } from '../errors/organization-mismatch';
 import { UnauthorizedActionPlanCreation } from '../errors/unauthorized-action-plan-creation';
 import { UnauthorizedActionPlanUpdate } from '../errors/unauthorized-action-plan-update';
+import { ActionPlan } from './action-plan';
 
 const baseParams = {
   id: 'plan-1',
@@ -36,14 +37,14 @@ describe('ActionPlan', () => {
   });
 
   it('rejects creation by MANAGER', () => {
-    expect(() =>
-      ActionPlan.create({ ...baseParams, actorRole: 'MANAGER' })
-    ).toThrow(UnauthorizedActionPlanCreation);
+    expect(() => ActionPlan.create({ ...baseParams, actorRole: 'MANAGER' })).toThrow(
+      UnauthorizedActionPlanCreation,
+    );
   });
 
   it('rejects creation by USER', () => {
     expect(() => ActionPlan.create({ ...baseParams, actorRole: 'USER' })).toThrow(
-      UnauthorizedActionPlanCreation
+      UnauthorizedActionPlanCreation,
     );
   });
 
@@ -83,7 +84,7 @@ describe('ActionPlan', () => {
         actorRole: 'USER',
         title: 'Nope',
         description: 'Nope',
-      })
+      }),
     ).toThrow(UnauthorizedActionPlanUpdate);
   });
 

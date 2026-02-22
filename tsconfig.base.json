@@ -19,12 +19,12 @@
     "target": "es2022",
     "customConditions": ["@org/source"],
     "paths": {
-      "@backend/action-plans": ["packages/backend/action-plans/src/index.ts"],
-      "@backend/actions": ["packages/backend/actions/src/index.ts"],
-      "@backend/kernel": ["packages/backend/kernel/src/index.ts"],
-      "@backend/kernel/*": ["packages/backend/kernel/src/*"],
-      "@backend/organizations": ["packages/backend/organizations/src/index.ts"],
-      "@backend/shared": ["packages/backend/shared/src/index.ts"]
+      "@repo/backend/action-plans": ["packages/backend/action-plans/src/index.ts"],
+      "@repo/backend/actions": ["packages/backend/actions/src/index.ts"],
+      "@repo/backend/kernel": ["packages/backend/kernel/src/index.ts"],
+      "@repo/backend/kernel/*": ["packages/backend/kernel/src/*"],
+      "@repo/backend/organizations": ["packages/backend/organizations/src/index.ts"],
+      "@repo/backend/shared": ["packages/backend/shared/src/index.ts"]
     }
   }
 }

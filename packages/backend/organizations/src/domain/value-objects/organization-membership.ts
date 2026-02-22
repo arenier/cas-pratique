@@ -1,6 +1,7 @@
-import { Role } from '@backend/kernel';
+import type { Role } from '@repo/backend/kernel';
+
 import { parseRole } from './role';
-import { UserId } from './user-id';
+import type { UserId } from './user-id';
 
 export type OrganizationMembershipProps = {
   userId: UserId;

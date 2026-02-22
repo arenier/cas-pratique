@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { Organization } from './organization';
+
+import type { Role } from '@repo/backend/kernel';
+
 import { InvalidRoleAssignment } from '../errors/invalid-role-assignment';
 import { LastAdminInvariantViolation } from '../errors/last-admin-invariant-violation';
 import { UnauthorizedOrganizationOperation } from '../errors/unauthorized-organization-operation';
 import { UserNotInOrganization } from '../errors/user-not-in-organization';
-import { Role } from '@backend/kernel';
+import { Organization } from './organization';
 
 const createOrganization = () =>
   Organization.create({
@@ -51,9 +53,7 @@ describe('Organization', () => {
       role: 'ADMIN',
     });
 
-    const roles = organization
-      .listMemberships()
-      .map((membership) => membership.role);
+    const roles = organization.listMemberships().map((membership) => membership.role);
 
     expect(roles).toContain('USER');
     expect(roles).toContain('MANAGER');
@@ -69,7 +69,7 @@ describe('Organization', () => {
         userId: 'user-1',
         email: 'user@qualineo.test',
         role: 'USER',
-      })
+      }),
     ).toThrow(UnauthorizedOrganizationOperation);
   });
 
@@ -82,7 +82,7 @@ describe('Organization', () => {
         userId: 'user-1',
         email: 'user@qualineo.test',
         role: 'OWNER' as unknown as Role,
-      })
+      }),
     ).toThrow(InvalidRoleAssignment);
   });
 
@@ -117,7 +117,7 @@ describe('Organization', () => {
         actorRole: 'MANAGER',
         userId: 'admin-1',
         newRole: 'USER',
-      })
+      }),
     ).toThrow(UnauthorizedOrganizationOperation);
   });
 
@@ -129,7 +129,7 @@ describe('Organization', () => {
         actorRole: 'ADMIN',
         userId: 'admin-1',
         newRole: 'OWNER' as unknown as Role,
-      })
+      }),
     ).toThrow(InvalidRoleAssignment);
   });
 
@@ -141,7 +141,7 @@ describe('Organization', () => {
         actorRole: 'ADMIN',
         userId: 'admin-1',
         newRole: 'MANAGER',
-      })
+      }),
     ).toThrow(LastAdminInvariantViolation);
   });
 
@@ -157,9 +157,7 @@ describe('Organization', () => {
 
     organization.deactivateUser({ actorRole: 'ADMIN', userId: 'user-1' });
 
-    const membership = organization
-      .listMemberships()
-      .find((item) => item.userId === 'user-1');
+    const membership = organization.listMemberships().find((item) => item.userId === 'user-1');
 
     expect(membership?.isActive).toBe(false);
   });
@@ -167,9 +165,9 @@ describe('Organization', () => {
   it('rejects deactivation from non-admin users', () => {
     const organization = createOrganization();
 
-    expect(() =>
-      organization.deactivateUser({ actorRole: 'USER', userId: 'admin-1' })
-    ).toThrow(UnauthorizedOrganizationOperation);
+    expect(() => organization.deactivateUser({ actorRole: 'USER', userId: 'admin-1' })).toThrow(
+      UnauthorizedOrganizationOperation,
+    );
   });
 
   it('allows deactivating an admin when another admin exists', () => {
@@ -184,9 +182,7 @@ describe('Organization', () => {
 
     organization.deactivateUser({ actorRole: 'ADMIN', userId: 'admin-2' });
 
-    const membership = organization
-      .listMemberships()
-      .find((item) => item.userId === 'admin-2');
+    const membership = organization.listMemberships().find((item) => item.userId === 'admin-2');
 
     expect(membership?.isActive).toBe(false);
   });
@@ -194,9 +190,9 @@ describe('Organization', () => {
   it('rejects deactivating the last active admin', () => {
     const organization = createOrganization();
 
-    expect(() =>
-      organization.deactivateUser({ actorRole: 'ADMIN', userId: 'admin-1' })
-    ).toThrow(LastAdminInvariantViolation);
+    expect(() => organization.deactivateUser({ actorRole: 'ADMIN', userId: 'admin-1' })).toThrow(
+      LastAdminInvariantViolation,
+    );
   });
 
   it('rejects changing role for unknown user', () => {
@@ -207,15 +203,15 @@ describe('Organization', () => {
         actorRole: 'ADMIN',
         userId: 'missing',
         newRole: 'USER',
-      })
+      }),
     ).toThrow(UserNotInOrganization);
   });
 
   it('rejects deactivating unknown user', () => {
     const organization = createOrganization();
 
-    expect(() =>
-      organization.deactivateUser({ actorRole: 'ADMIN', userId: 'missing' })
-    ).toThrow(UserNotInOrganization);
+    expect(() => organization.deactivateUser({ actorRole: 'ADMIN', userId: 'missing' })).toThrow(
+      UserNotInOrganization,
+    );
   });
 });

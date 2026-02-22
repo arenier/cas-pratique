@@ -1,7 +1,7 @@
 import {
-  ArgumentsHost,
+  type ArgumentsHost,
   Catch,
-  ExceptionFilter,
+  type ExceptionFilter,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
@@ -13,10 +13,9 @@ const BAD_REQUEST_ERRORS = new Set([
   'InvalidActionStatus',
 ]);
 
-import { InvalidRoleAssignment } from '@backend/organizations';
-const BAD_REQUEST_ERRORS2 = new Set([
-  InvalidRoleAssignment,
-]);
+// import { InvalidRoleAssignment } from '@repo/backend/organizations';
+
+// const BAD_REQUEST_ERRORS2 = new Set([InvalidRoleAssignment]);
 
 const CONFLICT_ERRORS = new Set(['ConcurrencyConflict', 'LastAdminInvariantViolation']);
 

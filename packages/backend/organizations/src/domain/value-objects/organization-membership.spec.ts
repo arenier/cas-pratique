@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { OrganizationMembership } from './organization-membership';
+
 import { InvalidRoleAssignment } from '../errors/invalid-role-assignment';
+import { OrganizationMembership } from './organization-membership';
 
 const baseParams = {
   userId: 'user-1',
@@ -35,7 +36,7 @@ describe('OrganizationMembership', () => {
         ...baseParams,
         role: 'OWNER' as unknown as 'USER',
         isActive: true,
-      })
+      }),
     ).toThrow(InvalidRoleAssignment);
   });
 });

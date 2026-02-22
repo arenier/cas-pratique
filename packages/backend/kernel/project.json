@@ -2,5 +2,13 @@
   "name": "backend-kernel",
   "projectType": "library",
   "root": "packages/backend/kernel",
-  "sourceRoot": "packages/backend/kernel/src"
+  "sourceRoot": "packages/backend/kernel/src",
+  "targets": {
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "biome check --diagnostic-level=warn packages/backend/kernel"
+      }
+    }
+  }
 }

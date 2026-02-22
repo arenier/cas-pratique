@@ -11,7 +11,7 @@ import {
   DomainExceptionFilter,
   RolesGuard,
   TenancyGuard,
-} from '@backend/shared';
+} from '@repo/backend/shared';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
