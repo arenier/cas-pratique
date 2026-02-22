@@ -1,0 +1,15 @@
+{
+  "name": "backend-actions",
+  "projectType": "library",
+  "root": "packages/backend/actions",
+  "sourceRoot": "packages/backend/actions/src",
+  "targets": {
+    "test": {
+      "executor": "@nx/vitest:vitest",
+      "outputs": ["{projectRoot}/coverage"],
+      "options": {
+        "configFile": "packages/backend/actions/vitest.config.ts"
+      }
+    }
+  }
+}
