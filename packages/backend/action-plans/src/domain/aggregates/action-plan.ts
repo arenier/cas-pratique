@@ -3,7 +3,7 @@ import { UnauthorizedActionPlanCreation } from '../errors/unauthorized-action-pl
 import { UnauthorizedActionPlanUpdate } from '../errors/unauthorized-action-plan-update';
 import { ActionPlanId } from '../value-objects/action-plan-id';
 import { OrganizationId } from '../value-objects/organization-id';
-import { Role, isAdmin, isManagerOrAdmin } from '../value-objects/role';
+import { Role, isAdmin, isManagerOrAdmin } from '@backend/kernel';
 import { UserId } from '../value-objects/user-id';
 
 export type ActionPlanCreateParams = {

@@ -1,0 +1,5 @@
+{
+  "name": "@backend/kernel",
+  "private": true,
+  "type": "module"
+}

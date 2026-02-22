@@ -5,4 +5,3 @@ export * from './errors/invalid-state-transition';
 export * from './errors/unauthorized-action-deletion';
 export * from './errors/unauthorized-transition';
 export * from './value-objects/action-state';
-export * from './value-objects/role';

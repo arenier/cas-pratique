@@ -5,5 +5,4 @@ export * from './errors/unauthorized-organization-operation';
 export * from './errors/user-not-in-organization';
 export * from './value-objects/organization-membership';
 export * from './value-objects/organization-id';
-export * from './value-objects/role';
 export * from './value-objects/user-id';

@@ -1,0 +1,6 @@
+{
+  "name": "backend-kernel",
+  "projectType": "library",
+  "root": "packages/backend/kernel",
+  "sourceRoot": "packages/backend/kernel/src"
+}

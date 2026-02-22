@@ -1,0 +1,15 @@
+{
+  "name": "backend-shared",
+  "projectType": "library",
+  "root": "packages/backend/shared",
+  "sourceRoot": "packages/backend/shared/src",
+  "targets": {
+    "test": {
+      "executor": "@nx/vitest:vitest",
+      "outputs": ["{projectRoot}/coverage"],
+      "options": {
+        "configFile": "packages/backend/shared/vitest.config.ts"
+      }
+    }
+  }
+}

@@ -3,7 +3,8 @@ import { UnauthorizedOrganizationOperation } from '../errors/unauthorized-organi
 import { UserNotInOrganization } from '../errors/user-not-in-organization';
 import { OrganizationMembership } from '../value-objects/organization-membership';
 import { OrganizationId } from '../value-objects/organization-id';
-import { Role, isAdmin, parseRole } from '../value-objects/role';
+import { Role, isAdmin } from '@backend/kernel';
+import { parseRole } from '../value-objects/role';
 import { UserId } from '../value-objects/user-id';
 
 export type OrganizationCreateParams = {

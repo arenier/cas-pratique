@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "composite": true,
     "declarationMap": true,
     "emitDeclarationOnly": true,
     "importHelpers": true,
     "isolatedModules": true,
     "lib": ["es2022"],
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
@@ -16,6 +17,13 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "es2022",
-    "customConditions": ["@org/source"]
+    "customConditions": ["@org/source"],
+    "paths": {
+      "@backend/action-plans": ["packages/backend/action-plans/src/index.ts"],
+      "@backend/actions": ["packages/backend/actions/src/index.ts"],
+      "@backend/kernel": ["packages/backend/kernel/src/index.ts"],
+      "@backend/organizations": ["packages/backend/organizations/src/index.ts"],
+      "@backend/shared": ["packages/backend/shared/src/index.ts"]
+    }
   }
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isAdmin, isManagerOrAdmin, isRole } from './role';
+import { isAdmin, isManagerOrAdmin, isRole } from '@backend/kernel';
 
 describe('Role', () => {
   it('accepts valid roles', () => {

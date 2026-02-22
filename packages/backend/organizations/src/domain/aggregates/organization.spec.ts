@@ -4,7 +4,7 @@ import { InvalidRoleAssignment } from '../errors/invalid-role-assignment';
 import { LastAdminInvariantViolation } from '../errors/last-admin-invariant-violation';
 import { UnauthorizedOrganizationOperation } from '../errors/unauthorized-organization-operation';
 import { UserNotInOrganization } from '../errors/user-not-in-organization';
-import { Role } from '../value-objects/role';
+import { Role } from '@backend/kernel';
 
 const createOrganization = () =>
   Organization.create({

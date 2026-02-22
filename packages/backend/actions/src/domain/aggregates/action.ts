@@ -3,7 +3,7 @@ import { InvalidStateTransition } from '../errors/invalid-state-transition';
 import { UnauthorizedActionDeletion } from '../errors/unauthorized-action-deletion';
 import { UnauthorizedTransition } from '../errors/unauthorized-transition';
 import { ActionState, parseActionState } from '../value-objects/action-state';
-import { Role, isAdmin, isManagerOrAdmin } from '../value-objects/role';
+import { Role, isAdmin, isManagerOrAdmin } from '@backend/kernel';
 
 export type ActionCreateParams = {
   id: string;
