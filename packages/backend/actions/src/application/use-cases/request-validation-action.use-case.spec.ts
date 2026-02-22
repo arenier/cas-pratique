@@ -8,10 +8,10 @@ import { InvalidStateTransition } from '../../domain/errors/invalid-state-transi
 import { UnauthorizedTransition } from '../../domain/errors/unauthorized-transition';
 import { InMemoryActionRepository } from '../../infrastructure/in-memory/in-memory-action-repository';
 import { ActionNotFound } from '../errors/action-not-found';
-import { StartActionUseCase } from './start-action.use-case';
+import { RequestValidationActionUseCase } from './request-validation-action.use-case';
 
-const createAction = (organizationId: string, actionId: string) =>
-  Action.create({
+const createInProgressAction = (organizationId: string, actionId: string) => {
+  const action = Action.create({
     id: actionId,
     organizationId,
     actionPlanId: 'plan-1',
@@ -20,18 +20,23 @@ const createAction = (organizationId: string, actionId: string) =>
     description: 'Action description',
   });
 
-describe('StartActionUseCase', () => {
-  it('starts an action', async () => {
+  action.start({ role: 'ADMIN', expectedVersion: 1 });
+
+  return action;
+};
+
+describe('RequestValidationActionUseCase', () => {
+  it('moves action to TO_VALIDATE', async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2025-01-01T00:00:00.000Z'));
 
     const actionRepository = new InMemoryActionRepository();
     const transactionRunner = new InMemoryTransactionRunner();
-    const useCase = new StartActionUseCase(actionRepository, transactionRunner);
+    const useCase = new RequestValidationActionUseCase(actionRepository, transactionRunner);
 
-    await actionRepository.save(createAction('org-1', 'action-1'));
-    const before = await actionRepository.getById({ organizationId: 'org-1', actionId: 'action-1' });
-    const beforeUpdatedAt = before?.updatedAt;
+    const action = createInProgressAction('org-1', 'action-1');
+    await actionRepository.save(action);
+    const beforeUpdatedAt = action.updatedAt;
 
     vi.advanceTimersByTime(1000);
 
@@ -39,7 +44,7 @@ describe('StartActionUseCase', () => {
       organizationId: 'org-1',
       actorRole: 'MANAGER',
       actionId: 'action-1',
-      expectedVersion: 1,
+      expectedVersion: 2,
     });
 
     const updated = await actionRepository.getById({
@@ -47,9 +52,9 @@ describe('StartActionUseCase', () => {
       actionId: 'action-1',
     });
 
-    expect(updated?.state).toBe('IN_PROGRESS');
-    expect(updated?.version).toBe(2);
-    expect(updated?.updatedAt.getTime()).toBeGreaterThan(beforeUpdatedAt?.getTime() ?? 0);
+    expect(updated?.state).toBe('TO_VALIDATE');
+    expect(updated?.version).toBe(3);
+    expect(updated?.updatedAt.getTime()).toBeGreaterThan(beforeUpdatedAt.getTime());
 
     vi.useRealTimers();
   });
@@ -57,7 +62,7 @@ describe('StartActionUseCase', () => {
   it('throws when action not found', async () => {
     const actionRepository = new InMemoryActionRepository();
     const transactionRunner = new InMemoryTransactionRunner();
-    const useCase = new StartActionUseCase(actionRepository, transactionRunner);
+    const useCase = new RequestValidationActionUseCase(actionRepository, transactionRunner);
 
     await expect(
       useCase.execute({
@@ -72,16 +77,17 @@ describe('StartActionUseCase', () => {
   it('rejects unauthorized roles', async () => {
     const actionRepository = new InMemoryActionRepository();
     const transactionRunner = new InMemoryTransactionRunner();
-    const useCase = new StartActionUseCase(actionRepository, transactionRunner);
+    const useCase = new RequestValidationActionUseCase(actionRepository, transactionRunner);
 
-    await actionRepository.save(createAction('org-1', 'action-1'));
+    const action = createInProgressAction('org-1', 'action-1');
+    await actionRepository.save(action);
 
     await expect(
       useCase.execute({
         organizationId: 'org-1',
         actorRole: 'USER',
         actionId: 'action-1',
-        expectedVersion: 1,
+        expectedVersion: 2,
       }),
     ).rejects.toBeInstanceOf(UnauthorizedTransition);
   });
@@ -89,18 +95,25 @@ describe('StartActionUseCase', () => {
   it('rejects invalid transitions', async () => {
     const actionRepository = new InMemoryActionRepository();
     const transactionRunner = new InMemoryTransactionRunner();
-    const useCase = new StartActionUseCase(actionRepository, transactionRunner);
+    const useCase = new RequestValidationActionUseCase(actionRepository, transactionRunner);
 
-    const action = createAction('org-1', 'action-1');
-    action.start({ role: 'ADMIN', expectedVersion: 1 });
-    await actionRepository.save(action);
+    await actionRepository.save(
+      Action.create({
+        id: 'action-1',
+        organizationId: 'org-1',
+        actionPlanId: 'plan-1',
+        createdByUserId: 'admin-1',
+        title: 'Action',
+        description: 'Action description',
+      }),
+    );
 
     await expect(
       useCase.execute({
         organizationId: 'org-1',
         actorRole: 'ADMIN',
         actionId: 'action-1',
-        expectedVersion: 2,
+        expectedVersion: 1,
       }),
     ).rejects.toBeInstanceOf(InvalidStateTransition);
   });
@@ -108,16 +121,17 @@ describe('StartActionUseCase', () => {
   it('rejects concurrency conflicts', async () => {
     const actionRepository = new InMemoryActionRepository();
     const transactionRunner = new InMemoryTransactionRunner();
-    const useCase = new StartActionUseCase(actionRepository, transactionRunner);
+    const useCase = new RequestValidationActionUseCase(actionRepository, transactionRunner);
 
-    await actionRepository.save(createAction('org-1', 'action-1'));
+    const action = createInProgressAction('org-1', 'action-1');
+    await actionRepository.save(action);
 
     await expect(
       useCase.execute({
         organizationId: 'org-1',
         actorRole: 'ADMIN',
         actionId: 'action-1',
-        expectedVersion: 0,
+        expectedVersion: 1,
       }),
     ).rejects.toBeInstanceOf(ConcurrencyConflict);
   });
@@ -125,16 +139,17 @@ describe('StartActionUseCase', () => {
   it('does not leak across organizations', async () => {
     const actionRepository = new InMemoryActionRepository();
     const transactionRunner = new InMemoryTransactionRunner();
-    const useCase = new StartActionUseCase(actionRepository, transactionRunner);
+    const useCase = new RequestValidationActionUseCase(actionRepository, transactionRunner);
 
-    await actionRepository.save(createAction('org-a', 'action-1'));
+    const action = createInProgressAction('org-a', 'action-1');
+    await actionRepository.save(action);
 
     await expect(
       useCase.execute({
         organizationId: 'org-b',
         actorRole: 'ADMIN',
         actionId: 'action-1',
-        expectedVersion: 1,
+        expectedVersion: 2,
       }),
     ).rejects.toBeInstanceOf(ActionNotFound);
   });
