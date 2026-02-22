@@ -13,6 +13,11 @@ const BAD_REQUEST_ERRORS = new Set([
   'InvalidActionStatus',
 ]);
 
+import { InvalidRoleAssignment } from '@backend/organizations';
+const BAD_REQUEST_ERRORS2 = new Set([
+  InvalidRoleAssignment,
+]);
+
 const CONFLICT_ERRORS = new Set(['ConcurrencyConflict', 'LastAdminInvariantViolation']);
 
 @Catch(Error)

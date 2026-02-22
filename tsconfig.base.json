@@ -22,6 +22,7 @@
       "@backend/action-plans": ["packages/backend/action-plans/src/index.ts"],
       "@backend/actions": ["packages/backend/actions/src/index.ts"],
       "@backend/kernel": ["packages/backend/kernel/src/index.ts"],
+      "@backend/kernel/*": ["packages/backend/kernel/src/*"],
       "@backend/organizations": ["packages/backend/organizations/src/index.ts"],
       "@backend/shared": ["packages/backend/shared/src/index.ts"]
     }
