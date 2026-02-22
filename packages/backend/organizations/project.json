@@ -4,6 +4,12 @@
   "root": "packages/backend/organizations",
   "sourceRoot": "packages/backend/organizations/src",
   "targets": {
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "biome check --diagnostic-level=warn packages/backend/organizations"
+      }
+    },
     "test": {
       "executor": "@nx/vitest:vitest",
       "outputs": ["{projectRoot}/coverage"],

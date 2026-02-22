@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { isAdmin, isRole, parseRole } from './role';
+
+import { isAdmin, isRole } from '@repo/backend/kernel';
+
 import { InvalidRoleAssignment } from '../errors/invalid-role-assignment';
+import { parseRole } from './role';
 
 describe('Role', () => {
   it('accepts valid roles', () => {

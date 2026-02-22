@@ -1,10 +1,11 @@
+import { isAdmin, isManagerOrAdmin, type Role } from '@repo/backend/kernel';
+
 import { OrganizationMismatch } from '../errors/organization-mismatch';
 import { UnauthorizedActionPlanCreation } from '../errors/unauthorized-action-plan-creation';
 import { UnauthorizedActionPlanUpdate } from '../errors/unauthorized-action-plan-update';
-import { ActionPlanId } from '../value-objects/action-plan-id';
-import { OrganizationId } from '../value-objects/organization-id';
-import { Role, isAdmin, isManagerOrAdmin } from '../value-objects/role';
-import { UserId } from '../value-objects/user-id';
+import type { ActionPlanId } from '../value-objects/action-plan-id';
+import type { OrganizationId } from '../value-objects/organization-id';
+import type { UserId } from '../value-objects/user-id';
 
 export type ActionPlanCreateParams = {
   id: ActionPlanId;

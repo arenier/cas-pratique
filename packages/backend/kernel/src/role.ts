@@ -7,8 +7,7 @@ export type Role = (typeof ROLES)[number];
  * @param value Candidate value.
  * @returns True when the value is a valid Role.
  */
-export const isRole = (value: string): value is Role =>
-  ROLES.includes(value as Role);
+export const isRole = (value: string): value is Role => ROLES.includes(value as Role);
 
 /**
  * Check whether the role is ADMIN.
@@ -18,9 +17,8 @@ export const isRole = (value: string): value is Role =>
 export const isAdmin = (role: Role): boolean => role === 'ADMIN';
 
 /**
- * Check whether the role is MANAGER or ADMIN.
+ * Check whether the role is ADMIN or MANAGER.
  * @param role Role to check.
- * @returns True when the role is MANAGER or ADMIN.
+ * @returns True when the role is ADMIN or MANAGER.
  */
-export const isManagerOrAdmin = (role: Role): boolean =>
-  role === 'MANAGER' || role === 'ADMIN';
+export const isManagerOrAdmin = (role: Role): boolean => role === 'MANAGER' || role === 'ADMIN';

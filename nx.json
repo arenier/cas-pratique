@@ -80,5 +80,8 @@
         "linter": "none"
       }
     }
+  },
+  "tui": {
+    "enabled": false
   }
 }

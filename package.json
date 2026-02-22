@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "test": "vitest"
+    "test": "vitest",
+    "lint": "nx lint",
+    "lint:all": "nx run-many --target=lint --parallel --all"
   },
   "private": true,
   "dependencies": {
@@ -22,6 +24,7 @@
     "typeorm": "^0.3.28"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.4.4",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.0",
     "@nx/js": "^22.5.0",
@@ -51,12 +54,14 @@
     "tslib": "^2.3.0",
     "typescript": "~5.9.2",
     "vite": "^7.0.0",
+    "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^4.0.0",
     "webpack-cli": "^5.1.4"
   },
   "workspaces": [
     "packages/*",
-    "apps/*"
+    "apps/*",
+    "pacakges"
   ],
   "volta": {
     "node": "24.13.0",

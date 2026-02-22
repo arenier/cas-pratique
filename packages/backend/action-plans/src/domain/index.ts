@@ -4,5 +4,4 @@ export * from './errors/unauthorized-action-plan-creation';
 export * from './errors/unauthorized-action-plan-update';
 export * from './value-objects/action-plan-id';
 export * from './value-objects/organization-id';
-export * from './value-objects/role';
 export * from './value-objects/user-id';

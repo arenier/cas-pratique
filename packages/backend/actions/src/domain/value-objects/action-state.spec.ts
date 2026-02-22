@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { parseActionState, isActionState } from './action-state';
+
 import { InvalidActionStatus } from '../errors/invalid-action-status';
+import { isActionState, parseActionState } from './action-state';
 
 describe('ActionState', () => {
   it('accepts valid states', () => {

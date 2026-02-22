@@ -1,10 +1,12 @@
+import { isAdmin, type Role } from '@repo/backend/kernel';
+
 import { LastAdminInvariantViolation } from '../errors/last-admin-invariant-violation';
 import { UnauthorizedOrganizationOperation } from '../errors/unauthorized-organization-operation';
 import { UserNotInOrganization } from '../errors/user-not-in-organization';
+import type { OrganizationId } from '../value-objects/organization-id';
 import { OrganizationMembership } from '../value-objects/organization-membership';
-import { OrganizationId } from '../value-objects/organization-id';
-import { Role, isAdmin, parseRole } from '../value-objects/role';
-import { UserId } from '../value-objects/user-id';
+import { parseRole } from '../value-objects/role';
+import type { UserId } from '../value-objects/user-id';
 
 export type OrganizationCreateParams = {
   id: OrganizationId;
@@ -62,7 +64,7 @@ export class Organization {
           email: membership.email,
           role: membership.role,
           isActive: membership.isActive,
-        })
+        }),
       ),
     });
   }
@@ -91,7 +93,7 @@ export class Organization {
         userId: params.userId,
         email: params.email,
         role,
-      })
+      }),
     );
   }
 
@@ -185,11 +187,11 @@ export class Organization {
    */
   private assertNotLastActiveAdmin(excludedUserId: UserId): void {
     const activeAdmins = this.memberships.filter(
-      (membership) => membership.isActive && isAdmin(membership.role)
+      (membership) => membership.isActive && isAdmin(membership.role),
     );
 
     const remainingAdmins = activeAdmins.filter(
-      (membership) => membership.userId !== excludedUserId
+      (membership) => membership.userId !== excludedUserId,
     );
 
     if (remainingAdmins.length === 0) {

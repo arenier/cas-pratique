@@ -1,12 +1,6 @@
 import { InvalidActionStatus } from '../errors/invalid-action-status';
 
-export const ACTION_STATES = [
-  'TODO',
-  'IN_PROGRESS',
-  'TO_VALIDATE',
-  'DONE',
-  'DELETED',
-] as const;
+export const ACTION_STATES = ['TODO', 'IN_PROGRESS', 'TO_VALIDATE', 'DONE', 'DELETED'] as const;
 
 export type ActionState = (typeof ACTION_STATES)[number];
 

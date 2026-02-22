@@ -1,9 +1,10 @@
+import { isAdmin, isManagerOrAdmin, type Role } from '@repo/backend/kernel';
+
 import { ConcurrencyConflict } from '../errors/concurrency-conflict';
 import { InvalidStateTransition } from '../errors/invalid-state-transition';
 import { UnauthorizedActionDeletion } from '../errors/unauthorized-action-deletion';
 import { UnauthorizedTransition } from '../errors/unauthorized-transition';
-import { ActionState, parseActionState } from '../value-objects/action-state';
-import { Role, isAdmin, isManagerOrAdmin } from '../value-objects/role';
+import { type ActionState, parseActionState } from '../value-objects/action-state';
 
 export type ActionCreateParams = {
   id: string;
@@ -133,12 +134,7 @@ export class Action {
    */
   delete(params: { role: Role; expectedVersion: number }): void {
     this.assertRoleForDeletion(params.role);
-    this.assertStateTransition('DELETED', [
-      'TODO',
-      'IN_PROGRESS',
-      'TO_VALIDATE',
-      'DONE',
-    ]);
+    this.assertStateTransition('DELETED', ['TODO', 'IN_PROGRESS', 'TO_VALIDATE', 'DONE']);
     this.applyTransition('DELETED', params.expectedVersion);
   }
 

@@ -3,5 +3,6 @@
   "compilerOptions": {
     "types": ["vitest/globals", "node"]
   },
-  "include": ["src/**/*.spec.ts", "src/**/*.test.ts", "src/**/*.d.ts"]
+  "include": ["src/**/*.spec.ts", "src/**/*.test.ts", "src/**/*.d.ts"],
+  "references": [{ "path": "../kernel/tsconfig.json" }]
 }
