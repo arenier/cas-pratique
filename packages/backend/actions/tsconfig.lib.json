@@ -8,7 +8,7 @@
   "include": ["src/**/*.ts"],
   "references": [
     {
-      "path": "../kernel/tsconfig.lib.json"
+      "path": "../kernel/tsconfig.json"
     }
   ]
 }

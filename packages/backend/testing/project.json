@@ -1,20 +1,20 @@
 {
-  "name": "backend-actions",
+  "name": "backend-testing",
   "projectType": "library",
-  "root": "packages/backend/actions",
-  "sourceRoot": "packages/backend/actions/src",
+  "root": "packages/backend/testing",
+  "sourceRoot": "packages/backend/testing/src",
   "targets": {
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "biome check --diagnostic-level=warn packages/backend/actions"
+        "command": "biome check --diagnostic-level=warn packages/backend/testing"
       }
     },
     "test": {
       "executor": "@nx/vitest:test",
       "outputs": ["{projectRoot}/coverage"],
       "options": {
-        "configFile": "packages/backend/actions/vitest.config.ts"
+        "configFile": "packages/backend/testing/vitest.config.ts"
       }
     }
   }

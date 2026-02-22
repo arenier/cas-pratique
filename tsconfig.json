@@ -23,6 +23,9 @@
     },
     {
       "path": "./packages/backend/shared"
+    },
+    {
+      "path": "./packages/backend/testing"
     }
   ]
 }

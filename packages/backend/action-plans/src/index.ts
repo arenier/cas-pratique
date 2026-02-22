@@ -1,1 +1,2 @@
-export * from './domain/index';
+export * from './domain';
+export * from './infrastructure';

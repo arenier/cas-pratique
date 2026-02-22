@@ -5,3 +5,5 @@ export * from './rbac/roles.decorator';
 export * from './rbac/roles.guard';
 export * from './shared.module';
 export * from './tenancy/tenancy.guard';
+export * from './transactions/transaction-runner';
+export * from './transactions/in-memory-transaction-runner';
