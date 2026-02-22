@@ -1,0 +1,2 @@
+export const ACTION_REPOSITORY = Symbol('ACTION_REPOSITORY');
+export const TRANSACTION_RUNNER = Symbol('TRANSACTION_RUNNER');
