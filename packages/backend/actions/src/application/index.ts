@@ -1,4 +1,7 @@
 export * from './commands/create-action.command';
+export * from './commands/start-action.command';
+export * from './errors/action-not-found';
 export * from './errors/action-already-exists';
 export * from './results/create-action.result';
 export * from './use-cases/create-action.use-case';
+export * from './use-cases/start-action.use-case';
