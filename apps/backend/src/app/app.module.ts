@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { SharedModule } from '@repo/backend/shared';
+import { ActionsModule, ACTION_REPOSITORY, TRANSACTION_RUNNER, InMemoryActionRepository } from '@repo/backend/actions';
+import { InMemoryTransactionRunner, SharedModule } from '@repo/backend/shared';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -24,6 +25,10 @@ import { AppService } from './app.service';
         autoLoadEntities: true,
         synchronize: true,
       }),
+    }),
+    ActionsModule.register({
+      actionRepositoryProvider: { provide: ACTION_REPOSITORY, useClass: InMemoryActionRepository },
+      transactionRunnerProvider: { provide: TRANSACTION_RUNNER, useClass: InMemoryTransactionRunner },
     }),
     SharedModule,
   ],
