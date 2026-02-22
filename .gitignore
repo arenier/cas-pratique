@@ -49,3 +49,6 @@ vitest.config.*.timestamp*
 # environment files
 .env
 .env.*
+
+# local agent context
+.context
