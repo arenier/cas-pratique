@@ -11,7 +11,7 @@
       }
     },
     "test": {
-      "executor": "@nx/vitest:vitest",
+      "executor": "@nx/vitest:test",
       "outputs": ["{projectRoot}/coverage"],
       "options": {
         "configFile": "packages/backend/action-plans/vitest.config.ts"
