@@ -1,4 +1,4 @@
-import { TransactionRunner } from './transaction-runner';
+import type { TransactionRunner } from './transaction-runner';
 
 export class InMemoryTransactionRunner implements TransactionRunner {
   /**

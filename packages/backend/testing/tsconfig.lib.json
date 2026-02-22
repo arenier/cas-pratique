@@ -8,18 +8,5 @@
   },
   "include": ["src/**/*.ts"],
   "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"],
-  "references": [
-    {
-      "path": "../../backend/actions/tsconfig.json"
-    },
-    {
-      "path": "../../backend/action-plans/tsconfig.json"
-    },
-    {
-      "path": "../../backend/organizations/tsconfig.json"
-    },
-    {
-      "path": "../../backend/shared/tsconfig.json"
-    }
-  ]
+  "references": []
 }

@@ -1,5 +1,5 @@
-import { Action, ActionProps } from '../../domain/aggregates/action';
-import { ActionRepository } from '../../domain/ports/action-repository';
+import { Action, type ActionProps } from '../../domain/aggregates/action';
+import type { ActionRepository } from '../../domain/ports/action-repository';
 
 /**
  * Clone a Date instance to avoid shared mutable references.
@@ -52,10 +52,7 @@ export class InMemoryActionRepository implements ActionRepository {
    * @returns The matching action or null when missing.
    * @throws {Error} Never thrown in the current implementation.
    */
-  async getById(params: {
-    organizationId: string;
-    actionId: string;
-  }): Promise<Action | null> {
+  async getById(params: { organizationId: string; actionId: string }): Promise<Action | null> {
     const orgStore = this.store.get(params.organizationId);
 
     if (!orgStore) {
