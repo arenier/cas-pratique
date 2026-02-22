@@ -10,7 +10,19 @@
       "path": "./apps/backend"
     },
     {
-      "path": "./packages/kernel"
+      "path": "./packages/backend/organizations"
+    },
+    {
+      "path": "./packages/backend/action-plans"
+    },
+    {
+      "path": "./packages/backend/actions"
+    },
+    {
+      "path": "./packages/backend/kernel"
+    },
+    {
+      "path": "./packages/backend/shared"
     }
   ]
 }

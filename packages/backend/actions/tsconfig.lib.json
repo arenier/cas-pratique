@@ -6,5 +6,9 @@
     "composite": true
   },
   "include": ["src/**/*.ts"],
-  "references": [{ "path": "../kernel/tsconfig.json" }]
+  "references": [
+    {
+      "path": "../kernel/tsconfig.lib.json"
+    }
+  ]
 }

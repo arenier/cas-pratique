@@ -4,6 +4,13 @@
   "root": "packages/backend/kernel",
   "sourceRoot": "packages/backend/kernel/src",
   "targets": {
+    "test": {
+      "executor": "@nx/vitest:test",
+      "outputs": ["{projectRoot}/coverage"],
+      "options": {
+        "configFile": "packages/backend/kernel/vitest.config.ts"
+      }
+    },
     "lint": {
       "executor": "nx:run-commands",
       "options": {
