@@ -2,7 +2,9 @@
   "name": "@org/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "test": "vitest"
+  },
   "private": true,
   "dependencies": {
     "@nestjs/common": "^11.0.0",
@@ -55,5 +57,9 @@
   "workspaces": [
     "packages/*",
     "apps/*"
-  ]
+  ],
+  "volta": {
+    "node": "24.13.0",
+    "npm": "11.10.1"
+  }
 }
