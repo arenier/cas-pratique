@@ -14,6 +14,15 @@
   "references": [
     {
       "path": "../../packages/backend/shared/tsconfig.lib.json"
+    },
+    {
+      "path": "../../packages/backend/actions/tsconfig.lib.json"
+    },
+    {
+      "path": "../../packages/backend/action-plans/tsconfig.lib.json"
+    },
+    {
+      "path": "../../packages/backend/organizations/tsconfig.lib.json"
     }
   ]
 }

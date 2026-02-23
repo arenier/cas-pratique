@@ -9,6 +9,9 @@
   "references": [
     {
       "path": "../kernel/tsconfig.lib.json"
+    },
+    {
+      "path": "../shared/tsconfig.lib.json"
     }
   ]
 }

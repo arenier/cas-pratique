@@ -17,7 +17,19 @@ const BAD_REQUEST_ERRORS = new Set([
 
 // const BAD_REQUEST_ERRORS2 = new Set([InvalidRoleAssignment]);
 
-const CONFLICT_ERRORS = new Set(['ConcurrencyConflict', 'LastAdminInvariantViolation']);
+const CONFLICT_ERRORS = new Set([
+  'ConcurrencyConflict',
+  'LastAdminInvariantViolation',
+  'ActionAlreadyExists',
+  'ActionPlanAlreadyExists',
+  'OrganizationAlreadyExists',
+]);
+
+const NOT_FOUND_ERRORS = new Set([
+  'ActionNotFound',
+  'ActionPlanNotFound',
+  'OrganizationNotFound',
+]);
 
 @Catch(Error)
 export class DomainExceptionFilter implements ExceptionFilter {
@@ -62,6 +74,10 @@ export class DomainExceptionFilter implements ExceptionFilter {
 
     if (CONFLICT_ERRORS.has(exception.name)) {
       return HttpStatus.CONFLICT;
+    }
+
+    if (NOT_FOUND_ERRORS.has(exception.name)) {
+      return HttpStatus.NOT_FOUND;
     }
 
     return HttpStatus.INTERNAL_SERVER_ERROR;

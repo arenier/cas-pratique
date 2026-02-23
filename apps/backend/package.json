@@ -72,6 +72,15 @@
             "buildTarget": "backend:build:production"
           }
         }
+      },
+      "test": {
+        "executor": "@nx/vitest:test",
+        "outputs": [
+          "{projectRoot}/coverage"
+        ],
+        "options": {
+          "configFile": "apps/backend/vitest.config.ts"
+        }
       }
     }
   },
