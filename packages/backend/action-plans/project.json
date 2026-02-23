@@ -1,20 +1,25 @@
 {
   "name": "backend-action-plans",
-  "projectType": "library",
-  "root": "packages/backend/action-plans",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/backend/action-plans/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project backend-action-plans --web",
   "targets": {
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "biome check --diagnostic-level=warn packages/backend/action-plans"
+        "command": "biome check --diagnostic-level=warn packages/backend/action-plans",
+        "env": {
+          "NODE_ENV": "test"
+        }
       }
     },
     "test": {
       "executor": "@nx/vitest:test",
       "outputs": ["{projectRoot}/coverage"],
       "options": {
-        "configFile": "packages/backend/action-plans/vitest.config.ts"
+        "configFile": "packages/backend/kernel/vitest.config.ts"
       }
     }
   }

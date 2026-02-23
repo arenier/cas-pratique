@@ -1,17 +1,5 @@
 {
   "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "outDir": "../../../dist/out-tsc",
-    "declaration": true,
-    "composite": true
-  },
   "include": ["src/**/*.ts"],
-  "references": [
-    {
-      "path": "../kernel/tsconfig.lib.json"
-    },
-    {
-      "path": "../shared/tsconfig.lib.json"
-    }
-  ]
+  "exclude": ["vitest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"]
 }
