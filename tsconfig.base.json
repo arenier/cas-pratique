@@ -25,6 +25,7 @@
       "@repo/backend/actions": ["packages/backend/actions/src/index.ts"],
       "@repo/backend/kernel": ["packages/backend/kernel/src/index.ts"],
       "@repo/backend/organizations": ["packages/backend/organizations/src/index.ts"],
+      "@repo/backend/persistence": ["packages/backend/persistence/src/index.ts"],
       "@repo/backend/shared": ["packages/backend/shared/src/index.ts"],
       "@repo/backend/testing": ["packages/backend/testing/src/index.ts"]
     }

@@ -14,11 +14,11 @@ import {
 
 import { type AuthenticatedRequest, Roles } from '@repo/backend/shared';
 
-import type { CompleteActionUseCase } from '../application/use-cases/complete-action.use-case';
-import type { CreateActionUseCase } from '../application/use-cases/create-action.use-case';
-import type { DeleteActionUseCase } from '../application/use-cases/delete-action.use-case';
-import type { RequestValidationActionUseCase } from '../application/use-cases/request-validation-action.use-case';
-import type { StartActionUseCase } from '../application/use-cases/start-action.use-case';
+import { CompleteActionUseCase } from '../application/use-cases/complete-action.use-case';
+import { CreateActionUseCase } from '../application/use-cases/create-action.use-case';
+import { DeleteActionUseCase } from '../application/use-cases/delete-action.use-case';
+import { RequestValidationActionUseCase } from '../application/use-cases/request-validation-action.use-case';
+import { StartActionUseCase } from '../application/use-cases/start-action.use-case';
 import { ActionTransitionDto } from './dtos/action-transition.dto';
 import { CreateActionDto } from './dtos/create-action.dto';
 
