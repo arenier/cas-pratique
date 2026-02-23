@@ -81,8 +81,10 @@
       }
     },
     "test": {
+      "executor": "@nx/vitest:test",
+      "outputs": ["{projectRoot}/coverage"],
       "options": {
-        "passWithNoTests": true
+        "configFile": "apps/backend/vitest.config.ts"
       }
     },
     "lint": {

@@ -3,6 +3,7 @@ import type { TransactionRunner } from '@repo/backend/shared';
 import type { ActionRepository } from '../../domain/ports/action-repository';
 import type { DeleteActionCommand } from '../commands/delete-action.command';
 import { ActionNotFound } from '../errors/action-not-found';
+import type { ActionSnapshotResult } from '../results/action-snapshot.result';
 
 export class DeleteActionUseCase {
   /**
@@ -20,10 +21,10 @@ export class DeleteActionUseCase {
   /**
    * Delete an action (transition to DELETED).
    * @param command Delete action command.
-   * @returns void
+   * @returns Action snapshot after the transition.
    * @throws {ActionNotFound} If the action does not exist.
    */
-  async execute(command: DeleteActionCommand): Promise<void> {
+  async execute(command: DeleteActionCommand): Promise<ActionSnapshotResult> {
     return this.transactionRunner.runInTransaction(async () => {
       const action = await this.actionRepository.getById({
         organizationId: command.organizationId,
@@ -40,6 +41,13 @@ export class DeleteActionUseCase {
       });
 
       await this.actionRepository.save(action);
+
+      return {
+        actionId: action.id,
+        state: action.state,
+        version: action.version,
+        updatedAt: action.updatedAt,
+      };
     });
   }
 }

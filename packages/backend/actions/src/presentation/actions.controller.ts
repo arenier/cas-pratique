@@ -1,28 +1,28 @@
+import { randomUUID } from 'node:crypto';
+
 import {
   Body,
   Controller,
   Delete,
   HttpCode,
-  Inject,
   Param,
   Post,
+  Query,
   Req,
   UnauthorizedException,
 } from '@nestjs/common';
 
 import { type AuthenticatedRequest, Roles } from '@repo/backend/shared';
 
-import { ActionNotFound } from '../application/errors/action-not-found';
 import type { CompleteActionUseCase } from '../application/use-cases/complete-action.use-case';
+import type { CreateActionUseCase } from '../application/use-cases/create-action.use-case';
 import type { DeleteActionUseCase } from '../application/use-cases/delete-action.use-case';
 import type { RequestValidationActionUseCase } from '../application/use-cases/request-validation-action.use-case';
 import type { StartActionUseCase } from '../application/use-cases/start-action.use-case';
-import type { Action } from '../domain/aggregates/action';
-import type { ActionRepository } from '../domain/ports/action-repository';
-import { ACTION_REPOSITORY } from './actions.tokens';
-import type { ActionTransitionDto } from './dtos/action-transition.dto';
+import { ActionTransitionDto } from './dtos/action-transition.dto';
+import { CreateActionDto } from './dtos/create-action.dto';
 
-export type ActionTransitionResponse = {
+export type ActionResponse = {
   actionId: string;
   state: string;
   version: number;
@@ -33,19 +33,51 @@ export type ActionTransitionResponse = {
 export class ActionsController {
   /**
    * Create a new ActionsController.
+   * @param createActionUseCase Create action use-case.
    * @param startActionUseCase Start action use-case.
    * @param requestValidationActionUseCase Request validation use-case.
    * @param completeActionUseCase Complete action use-case.
    * @param deleteActionUseCase Delete action use-case.
-   * @param actionRepository Action repository for response data.
    */
   constructor(
+    private readonly createActionUseCase: CreateActionUseCase,
     private readonly startActionUseCase: StartActionUseCase,
     private readonly requestValidationActionUseCase: RequestValidationActionUseCase,
     private readonly completeActionUseCase: CompleteActionUseCase,
     private readonly deleteActionUseCase: DeleteActionUseCase,
-    @Inject(ACTION_REPOSITORY) private readonly actionRepository: ActionRepository,
   ) {}
+
+  /**
+   * Create a new action.
+   * @param request Authenticated request.
+   * @param body Action creation payload.
+   * @returns Action response.
+   * @throws {UnauthorizedException} If authentication context is missing.
+   * @throws {ActionPlanNotFound} If the action plan does not exist.
+   * @throws {ActionAlreadyExists} If the action already exists.
+   */
+  @Post()
+  @Roles('ADMIN', 'MANAGER')
+  @HttpCode(201)
+  async create(
+    @Req() request: AuthenticatedRequest,
+    @Body() body: CreateActionDto,
+  ): Promise<ActionResponse> {
+    const authUser = this.requireAuthUser(request);
+    const actionId = body.actionId ?? randomUUID();
+
+    const result = await this.createActionUseCase.execute({
+      organizationId: authUser.organizationId,
+      actorRole: authUser.role,
+      actionId,
+      actionPlanId: body.actionPlanId,
+      createdByUserId: authUser.userId,
+      title: body.title,
+      description: body.description,
+    });
+
+    return this.toResponse(result);
+  }
 
   /**
    * Start an action workflow.
@@ -66,19 +98,17 @@ export class ActionsController {
     @Req() request: AuthenticatedRequest,
     @Param('actionId') actionId: string,
     @Body() body: ActionTransitionDto,
-  ): Promise<ActionTransitionResponse> {
+  ): Promise<ActionResponse> {
     const authUser = this.requireAuthUser(request);
 
-    await this.startActionUseCase.execute({
+    const result = await this.startActionUseCase.execute({
       organizationId: authUser.organizationId,
       actorRole: authUser.role,
       actionId,
       expectedVersion: body.expectedVersion,
     });
 
-    const action = await this.loadAction(authUser.organizationId, actionId);
-
-    return this.toResponse(action);
+    return this.toResponse(result);
   }
 
   /**
@@ -100,19 +130,17 @@ export class ActionsController {
     @Req() request: AuthenticatedRequest,
     @Param('actionId') actionId: string,
     @Body() body: ActionTransitionDto,
-  ): Promise<ActionTransitionResponse> {
+  ): Promise<ActionResponse> {
     const authUser = this.requireAuthUser(request);
 
-    await this.requestValidationActionUseCase.execute({
+    const result = await this.requestValidationActionUseCase.execute({
       organizationId: authUser.organizationId,
       actorRole: authUser.role,
       actionId,
       expectedVersion: body.expectedVersion,
     });
 
-    const action = await this.loadAction(authUser.organizationId, actionId);
-
-    return this.toResponse(action);
+    return this.toResponse(result);
   }
 
   /**
@@ -134,26 +162,24 @@ export class ActionsController {
     @Req() request: AuthenticatedRequest,
     @Param('actionId') actionId: string,
     @Body() body: ActionTransitionDto,
-  ): Promise<ActionTransitionResponse> {
+  ): Promise<ActionResponse> {
     const authUser = this.requireAuthUser(request);
 
-    await this.completeActionUseCase.execute({
+    const result = await this.completeActionUseCase.execute({
       organizationId: authUser.organizationId,
       actorRole: authUser.role,
       actionId,
       expectedVersion: body.expectedVersion,
     });
 
-    const action = await this.loadAction(authUser.organizationId, actionId);
-
-    return this.toResponse(action);
+    return this.toResponse(result);
   }
 
   /**
    * Delete an action.
    * @param request Authenticated request.
    * @param actionId Action identifier.
-   * @param body Transition payload with expected version.
+   * @param query Transition payload with expected version.
    * @returns Action transition response.
    * @throws {UnauthorizedException} If authentication context is missing.
    * @throws {ActionNotFound} If the action does not exist.
@@ -167,20 +193,18 @@ export class ActionsController {
   async delete(
     @Req() request: AuthenticatedRequest,
     @Param('actionId') actionId: string,
-    @Body() body: ActionTransitionDto,
-  ): Promise<ActionTransitionResponse> {
+    @Query() query: ActionTransitionDto,
+  ): Promise<ActionResponse> {
     const authUser = this.requireAuthUser(request);
 
-    await this.deleteActionUseCase.execute({
+    const result = await this.deleteActionUseCase.execute({
       organizationId: authUser.organizationId,
       actorRole: authUser.role,
       actionId,
-      expectedVersion: body.expectedVersion,
+      expectedVersion: query.expectedVersion,
     });
 
-    const action = await this.loadAction(authUser.organizationId, actionId);
-
-    return this.toResponse(action);
+    return this.toResponse(result);
   }
 
   /**
@@ -198,33 +222,23 @@ export class ActionsController {
   }
 
   /**
-   * Load an action or throw if missing.
-   * @param organizationId Organization identifier.
-   * @param actionId Action identifier.
-   * @returns Action aggregate.
-   * @throws {ActionNotFound} If the action does not exist.
-   */
-  private async loadAction(organizationId: string, actionId: string): Promise<Action> {
-    const action = await this.actionRepository.getById({ organizationId, actionId });
-
-    if (!action) {
-      throw new ActionNotFound(actionId, organizationId);
-    }
-
-    return action;
-  }
-
-  /**
    * Build a response payload from an action aggregate.
-   * @param action Action aggregate.
-   * @returns Action transition response.
+   * @param snapshot Action snapshot.
+   * @returns Action response payload.
    */
-  private toResponse(action: Action): ActionTransitionResponse {
+  private toResponse(snapshot: ActionSnapshot): ActionResponse {
     return {
-      actionId: action.id,
-      state: action.state,
-      version: action.version,
-      updatedAt: action.updatedAt.toISOString(),
+      actionId: snapshot.actionId,
+      state: snapshot.state,
+      version: snapshot.version,
+      updatedAt: snapshot.updatedAt.toISOString(),
     };
   }
 }
+
+type ActionSnapshot = {
+  actionId: string;
+  state: string;
+  version: number;
+  updatedAt: Date;
+};

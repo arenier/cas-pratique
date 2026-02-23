@@ -1,5 +1,22 @@
 {
   "extends": "./tsconfig.json",
   "include": ["src/**/*.ts"],
-  "exclude": ["vitest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"]
+  "exclude": ["vitest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"],
+  "references": [
+    {
+      "path": "../../packages/backend/testing"
+    },
+    {
+      "path": "../../packages/backend/shared"
+    },
+    {
+      "path": "../../packages/backend/organizations"
+    },
+    {
+      "path": "../../packages/backend/actions"
+    },
+    {
+      "path": "../../packages/backend/action-plans"
+    }
+  ]
 }

@@ -48,7 +48,15 @@ describe('CreateActionUseCase', () => {
       actionId: 'action-1',
     });
 
-    expect(result).toEqual({ actionId: 'action-1', actionPlanId: 'plan-1' });
+    expect(result).toEqual(
+      expect.objectContaining({
+        actionId: 'action-1',
+        actionPlanId: 'plan-1',
+        state: 'TODO',
+        version: 1,
+        updatedAt: expect.any(Date),
+      }),
+    );
     expect(saved).not.toBeNull();
     expect(saved?.state).toBe('TODO');
     expect(saved?.actionPlanId).toBe('plan-1');

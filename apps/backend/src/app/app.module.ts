@@ -25,6 +25,11 @@ import { InMemoryTransactionRunner, SharedModule } from '@repo/backend/shared';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
+const organizationRepository = new InMemoryOrganizationRepository();
+const actionPlanRepository = new InMemoryActionPlanRepository();
+const actionRepository = new InMemoryActionRepository();
+const transactionRunner = new InMemoryTransactionRunner();
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -47,30 +52,31 @@ import { AppService } from './app.service';
       }),
     }),
     ActionsModule.register({
-      actionRepositoryProvider: { provide: ACTION_REPOSITORY, useClass: InMemoryActionRepository },
+      actionRepositoryProvider: { provide: ACTION_REPOSITORY, useValue: actionRepository },
+      actionPlanRepositoryProvider: { provide: ACTION_PLAN_REPOSITORY, useValue: actionPlanRepository },
       transactionRunnerProvider: {
         provide: TRANSACTION_RUNNER,
-        useClass: InMemoryTransactionRunner,
+        useValue: transactionRunner,
       },
     }),
     OrganizationsModule.register({
       organizationRepositoryProvider: {
         provide: ORGANIZATION_REPOSITORY,
-        useClass: InMemoryOrganizationRepository,
+        useValue: organizationRepository,
       },
       transactionRunnerProvider: {
         provide: ORGANIZATION_TRANSACTION_RUNNER,
-        useClass: InMemoryTransactionRunner,
+        useValue: transactionRunner,
       },
     }),
     ActionPlansModule.register({
       actionPlanRepositoryProvider: {
         provide: ACTION_PLAN_REPOSITORY,
-        useClass: InMemoryActionPlanRepository,
+        useValue: actionPlanRepository,
       },
       transactionRunnerProvider: {
         provide: ACTION_PLAN_TRANSACTION_RUNNER,
-        useClass: InMemoryTransactionRunner,
+        useValue: transactionRunner,
       },
     }),
     SharedModule,

@@ -26,7 +26,7 @@ export class CreateActionUseCase {
   /**
    * Create a new action linked to an action plan.
    * @param command Create action command.
-   * @returns CreateActionResult with identifiers.
+   * @returns CreateActionResult with the action snapshot.
    * @throws {ActionPlanNotFound} If the action plan does not exist.
    * @throws {ActionAlreadyExists} If the action already exists.
    */
@@ -64,8 +64,11 @@ export class CreateActionUseCase {
       await this.actionRepository.save(action);
 
       return {
-        actionId: command.actionId,
-        actionPlanId: command.actionPlanId,
+        actionId: action.id,
+        actionPlanId: action.actionPlanId,
+        state: action.state,
+        version: action.version,
+        updatedAt: action.updatedAt,
       };
     });
   }

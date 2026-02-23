@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import { IsInt, Min } from 'class-validator';
 
 /**
@@ -5,6 +6,7 @@ import { IsInt, Min } from 'class-validator';
  */
 export class ActionTransitionDto {
   /** Expected current version for optimistic locking. */
+  @Type(() => Number)
   @IsInt()
   @Min(1)
   expectedVersion!: number;

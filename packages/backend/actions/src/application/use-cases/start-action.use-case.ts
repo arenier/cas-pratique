@@ -3,6 +3,7 @@ import type { TransactionRunner } from '@repo/backend/shared';
 import type { ActionRepository } from '../../domain/ports/action-repository';
 import type { StartActionCommand } from '../commands/start-action.command';
 import { ActionNotFound } from '../errors/action-not-found';
+import type { ActionSnapshotResult } from '../results/action-snapshot.result';
 
 export class StartActionUseCase {
   /**
@@ -20,10 +21,10 @@ export class StartActionUseCase {
   /**
    * Transition an action from TODO to IN_PROGRESS.
    * @param command Start action command.
-   * @returns void
+   * @returns Action snapshot after the transition.
    * @throws {ActionNotFound} If the action does not exist.
    */
-  async execute(command: StartActionCommand): Promise<void> {
+  async execute(command: StartActionCommand): Promise<ActionSnapshotResult> {
     return this.transactionRunner.runInTransaction(async () => {
       const action = await this.actionRepository.getById({
         organizationId: command.organizationId,
@@ -40,6 +41,13 @@ export class StartActionUseCase {
       });
 
       await this.actionRepository.save(action);
+
+      return {
+        actionId: action.id,
+        state: action.state,
+        version: action.version,
+        updatedAt: action.updatedAt,
+      };
     });
   }
 }

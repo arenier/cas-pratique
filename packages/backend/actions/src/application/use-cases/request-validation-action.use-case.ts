@@ -3,6 +3,7 @@ import type { TransactionRunner } from '@repo/backend/shared';
 import type { ActionRepository } from '../../domain/ports/action-repository';
 import type { RequestValidationActionCommand } from '../commands/request-validation-action.command';
 import { ActionNotFound } from '../errors/action-not-found';
+import type { ActionSnapshotResult } from '../results/action-snapshot.result';
 
 export class RequestValidationActionUseCase {
   /**
@@ -20,10 +21,10 @@ export class RequestValidationActionUseCase {
   /**
    * Transition an action from IN_PROGRESS to TO_VALIDATE.
    * @param command Request validation command.
-   * @returns void
+   * @returns Action snapshot after the transition.
    * @throws {ActionNotFound} If the action does not exist.
    */
-  async execute(command: RequestValidationActionCommand): Promise<void> {
+  async execute(command: RequestValidationActionCommand): Promise<ActionSnapshotResult> {
     return this.transactionRunner.runInTransaction(async () => {
       const action = await this.actionRepository.getById({
         organizationId: command.organizationId,
@@ -40,6 +41,13 @@ export class RequestValidationActionUseCase {
       });
 
       await this.actionRepository.save(action);
+
+      return {
+        actionId: action.id,
+        state: action.state,
+        version: action.version,
+        updatedAt: action.updatedAt,
+      };
     });
   }
 }
