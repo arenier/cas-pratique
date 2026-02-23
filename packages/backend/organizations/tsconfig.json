@@ -1,6 +1,4 @@
 {
-  "files": [],
-  "include": [],
   "compilerOptions": {
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true

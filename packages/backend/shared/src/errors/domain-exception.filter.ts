@@ -13,10 +13,6 @@ const BAD_REQUEST_ERRORS = new Set([
   'InvalidActionStatus',
 ]);
 
-// import { InvalidRoleAssignment } from '@repo/backend/organizations';
-
-// const BAD_REQUEST_ERRORS2 = new Set([InvalidRoleAssignment]);
-
 const CONFLICT_ERRORS = new Set([
   'ConcurrencyConflict',
   'LastAdminInvariantViolation',
@@ -25,11 +21,7 @@ const CONFLICT_ERRORS = new Set([
   'OrganizationAlreadyExists',
 ]);
 
-const NOT_FOUND_ERRORS = new Set([
-  'ActionNotFound',
-  'ActionPlanNotFound',
-  'OrganizationNotFound',
-]);
+const NOT_FOUND_ERRORS = new Set(['ActionNotFound', 'ActionPlanNotFound', 'OrganizationNotFound']);
 
 @Catch(Error)
 export class DomainExceptionFilter implements ExceptionFilter {

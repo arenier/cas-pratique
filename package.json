@@ -66,8 +66,7 @@
   },
   "workspaces": [
     "packages/*",
-    "apps/*",
-    "pacakges"
+    "apps/*"
   ],
   "volta": {
     "node": "24.13.0",

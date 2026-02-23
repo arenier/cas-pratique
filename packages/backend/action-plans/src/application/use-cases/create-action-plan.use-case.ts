@@ -1,9 +1,10 @@
+import type { TransactionRunner } from '@repo/backend/shared';
+
+import { ActionPlan } from '../../domain/aggregates/action-plan';
 import type { ActionPlanRepository } from '../../domain/ports/action-plan-repository';
 import type { CreateActionPlanCommand } from '../commands/create-action-plan.command';
 import { ActionPlanAlreadyExists } from '../errors/action-plan-already-exists';
 import type { CreateActionPlanResult } from '../results/create-action-plan.result';
-import { ActionPlan } from '../../domain/aggregates/action-plan';
-import type { TransactionRunner } from '@repo/backend/shared';
 
 export class CreateActionPlanUseCase {
   /**
