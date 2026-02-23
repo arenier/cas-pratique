@@ -1,8 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ActionsModule, ACTION_REPOSITORY, TRANSACTION_RUNNER, InMemoryActionRepository } from '@repo/backend/actions';
+
+import {
+  ACTION_REPOSITORY,
+  ActionsModule,
+  InMemoryActionRepository,
+  TRANSACTION_RUNNER,
+} from '@repo/backend/actions';
 import { InMemoryTransactionRunner, SharedModule } from '@repo/backend/shared';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -12,6 +19,7 @@ import { AppService } from './app.service';
       envFilePath: `${__dirname}/../.env`,
       isGlobal: true,
     }),
+    // Kept for later persistence stage; not used by the current in-memory wiring.
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -28,7 +36,10 @@ import { AppService } from './app.service';
     }),
     ActionsModule.register({
       actionRepositoryProvider: { provide: ACTION_REPOSITORY, useClass: InMemoryActionRepository },
-      transactionRunnerProvider: { provide: TRANSACTION_RUNNER, useClass: InMemoryTransactionRunner },
+      transactionRunnerProvider: {
+        provide: TRANSACTION_RUNNER,
+        useClass: InMemoryTransactionRunner,
+      },
     }),
     SharedModule,
   ],
