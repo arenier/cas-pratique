@@ -3,17 +3,17 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import {
-  ACTION_REPOSITORY,
-  ActionsModule,
-  InMemoryActionRepository,
-  TRANSACTION_RUNNER,
-} from '@repo/backend/actions';
-import {
   ACTION_PLAN_REPOSITORY,
   ACTION_PLAN_TRANSACTION_RUNNER,
   ActionPlansModule,
   InMemoryActionPlanRepository,
 } from '@repo/backend/action-plans';
+import {
+  ACTION_REPOSITORY,
+  ActionsModule,
+  InMemoryActionRepository,
+  TRANSACTION_RUNNER,
+} from '@repo/backend/actions';
 import {
   InMemoryOrganizationRepository,
   ORGANIZATION_REPOSITORY,
