@@ -1,10 +1,7 @@
 {
+  "extends": "../../../tsconfig.base.json",
   "files": [],
   "include": [],
-  "compilerOptions": {
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
-  },
   "references": [
     {
       "path": "./tsconfig.lib.json"
@@ -12,6 +9,5 @@
     {
       "path": "./tsconfig.spec.json"
     }
-  ],
-  "extends": "../../../tsconfig.base.json"
+  ]
 }

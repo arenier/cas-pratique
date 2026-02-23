@@ -1,20 +1,25 @@
 {
   "name": "backend-organizations",
-  "projectType": "library",
-  "root": "packages/backend/organizations",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/backend/organizations/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project backend-organizations --web",
   "targets": {
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "biome check --diagnostic-level=warn packages/backend/organizations"
+        "command": "biome check --diagnostic-level=warn packages/backend/organizations",
+        "env": {
+          "NODE_ENV": "test"
+        }
       }
     },
     "test": {
       "executor": "@nx/vitest:test",
       "outputs": ["{projectRoot}/coverage"],
       "options": {
-        "configFile": "packages/backend/organizations/vitest.config.ts"
+        "configFile": "packages/backend/kernel/vitest.config.ts"
       }
     }
   }

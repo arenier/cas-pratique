@@ -63,6 +63,17 @@ describe('DomainExceptionFilter', () => {
     expect(response.status).toHaveBeenCalledWith(409);
   });
 
+  it('maps not found errors to 404', () => {
+    const filter = new DomainExceptionFilter();
+    const { host, response } = createHost();
+    const error = new Error('missing');
+    error.name = 'OrganizationNotFound';
+
+    filter.catch(error, host);
+
+    expect(response.status).toHaveBeenCalledWith(404);
+  });
+
   it('maps unknown errors to 500', () => {
     const filter = new DomainExceptionFilter();
     const { host, response } = createHost();

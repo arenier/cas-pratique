@@ -1,20 +1,25 @@
 {
   "name": "backend-shared",
-  "projectType": "library",
-  "root": "packages/backend/shared",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/backend/shared/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project backend-shared --web",
   "targets": {
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "biome check --diagnostic-level=warn packages/backend/shared"
+        "command": "biome check --diagnostic-level=warn packages/backend/shared",
+        "env": {
+          "NODE_ENV": "test"
+        }
       }
     },
     "test": {
       "executor": "@nx/vitest:test",
       "outputs": ["{projectRoot}/coverage"],
       "options": {
-        "configFile": "packages/backend/shared/vitest.config.ts"
+        "configFile": "packages/backend/kernel/vitest.config.ts"
       }
     }
   }

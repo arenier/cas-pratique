@@ -1,20 +1,25 @@
 {
   "name": "backend-kernel",
-  "projectType": "library",
-  "root": "packages/backend/kernel",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/backend/kernel/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project backend-kernel --web",
   "targets": {
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "biome check --diagnostic-level=warn packages/backend/kernel",
+        "env": {
+          "NODE_ENV": "test"
+        }
+      }
+    },
     "test": {
       "executor": "@nx/vitest:test",
       "outputs": ["{projectRoot}/coverage"],
       "options": {
         "configFile": "packages/backend/kernel/vitest.config.ts"
-      }
-    },
-    "lint": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "biome check --diagnostic-level=warn packages/backend/kernel"
       }
     }
   }

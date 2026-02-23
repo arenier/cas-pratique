@@ -3,11 +3,23 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import {
+  ACTION_PLAN_REPOSITORY,
+  ACTION_PLAN_TRANSACTION_RUNNER,
+  ActionPlansModule,
+  InMemoryActionPlanRepository,
+} from '@repo/backend/action-plans';
+import {
   ACTION_REPOSITORY,
   ActionsModule,
   InMemoryActionRepository,
   TRANSACTION_RUNNER,
 } from '@repo/backend/actions';
+import {
+  InMemoryOrganizationRepository,
+  ORGANIZATION_REPOSITORY,
+  ORGANIZATION_TRANSACTION_RUNNER,
+  OrganizationsModule,
+} from '@repo/backend/organizations';
 import { InMemoryTransactionRunner, SharedModule } from '@repo/backend/shared';
 
 import { AppController } from './app.controller';
@@ -38,6 +50,26 @@ import { AppService } from './app.service';
       actionRepositoryProvider: { provide: ACTION_REPOSITORY, useClass: InMemoryActionRepository },
       transactionRunnerProvider: {
         provide: TRANSACTION_RUNNER,
+        useClass: InMemoryTransactionRunner,
+      },
+    }),
+    OrganizationsModule.register({
+      organizationRepositoryProvider: {
+        provide: ORGANIZATION_REPOSITORY,
+        useClass: InMemoryOrganizationRepository,
+      },
+      transactionRunnerProvider: {
+        provide: ORGANIZATION_TRANSACTION_RUNNER,
+        useClass: InMemoryTransactionRunner,
+      },
+    }),
+    ActionPlansModule.register({
+      actionPlanRepositoryProvider: {
+        provide: ACTION_PLAN_REPOSITORY,
+        useClass: InMemoryActionPlanRepository,
+      },
+      transactionRunnerProvider: {
+        provide: ACTION_PLAN_TRANSACTION_RUNNER,
         useClass: InMemoryTransactionRunner,
       },
     }),
