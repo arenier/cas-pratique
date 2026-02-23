@@ -23,6 +23,9 @@
     },
     {
       "path": "../../packages/backend/organizations/tsconfig.lib.json"
+    },
+    {
+      "path": "../../packages/backend/shared/tsconfig.lib.json"
     }
   ]
 }
