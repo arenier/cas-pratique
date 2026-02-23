@@ -1,25 +1,25 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { type INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 
 import {
-  ActionPlansModule,
   ACTION_PLAN_REPOSITORY,
   ACTION_PLAN_TRANSACTION_RUNNER,
+  ActionPlansModule,
 } from '@repo/backend/action-plans';
 import {
-  OrganizationsModule,
   ORGANIZATION_REPOSITORY,
   ORGANIZATION_TRANSACTION_RUNNER,
+  OrganizationsModule,
 } from '@repo/backend/organizations';
 import {
   AuthGuard,
   DomainExceptionFilter,
   RolesGuard,
+  SharedModule,
   TenancyGuard,
 } from '@repo/backend/shared';
-import { SharedModule } from '@repo/backend/shared';
 import {
   createInMemoryTestContext,
   givenActionPlan,
@@ -176,7 +176,11 @@ describe('Organizations & Action plans (e2e)', () => {
     const { app, actionPlanRepository } = await createApp();
 
     await actionPlanRepository.save(
-      givenActionPlan({ actionPlanId: 'plan-1', organizationId: 'org-1', createdByUserId: 'admin-1' }),
+      givenActionPlan({
+        actionPlanId: 'plan-1',
+        organizationId: 'org-1',
+        createdByUserId: 'admin-1',
+      }),
     );
 
     await request(app.getHttpServer())

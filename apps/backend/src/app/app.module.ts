@@ -22,9 +22,6 @@ import {
 } from '@repo/backend/organizations';
 import { InMemoryTransactionRunner, SharedModule } from '@repo/backend/shared';
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-
 const organizationRepository = new InMemoryOrganizationRepository();
 const actionPlanRepository = new InMemoryActionPlanRepository();
 const actionRepository = new InMemoryActionRepository();
@@ -53,7 +50,10 @@ const transactionRunner = new InMemoryTransactionRunner();
     }),
     ActionsModule.register({
       actionRepositoryProvider: { provide: ACTION_REPOSITORY, useValue: actionRepository },
-      actionPlanRepositoryProvider: { provide: ACTION_PLAN_REPOSITORY, useValue: actionPlanRepository },
+      actionPlanRepositoryProvider: {
+        provide: ACTION_PLAN_REPOSITORY,
+        useValue: actionPlanRepository,
+      },
       transactionRunnerProvider: {
         provide: TRANSACTION_RUNNER,
         useValue: transactionRunner,
@@ -81,7 +81,5 @@ const transactionRunner = new InMemoryTransactionRunner();
     }),
     SharedModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

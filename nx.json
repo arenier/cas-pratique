@@ -61,7 +61,7 @@
   ],
   "targetDefaults": {
     "test": {
-      "dependsOn": ["^build"]
+      "dependsOn": []
     }
   },
   "generators": {
