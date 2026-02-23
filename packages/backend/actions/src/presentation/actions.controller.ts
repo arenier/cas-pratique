@@ -5,6 +5,7 @@ import {
   Controller,
   Delete,
   HttpCode,
+  Inject,
   Param,
   Post,
   Query,
@@ -12,7 +13,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
-import { type AuthenticatedRequest, Roles } from '@repo/backend/shared';
+import { type AuthenticatedRequest, Roles, validateDto } from '@repo/backend/shared';
 
 import { CompleteActionUseCase } from '../application/use-cases/complete-action.use-case';
 import { CreateActionUseCase } from '../application/use-cases/create-action.use-case';
@@ -40,10 +41,15 @@ export class ActionsController {
    * @param deleteActionUseCase Delete action use-case.
    */
   constructor(
+    @Inject(CreateActionUseCase)
     private readonly createActionUseCase: CreateActionUseCase,
+    @Inject(StartActionUseCase)
     private readonly startActionUseCase: StartActionUseCase,
+    @Inject(RequestValidationActionUseCase)
     private readonly requestValidationActionUseCase: RequestValidationActionUseCase,
+    @Inject(CompleteActionUseCase)
     private readonly completeActionUseCase: CompleteActionUseCase,
+    @Inject(DeleteActionUseCase)
     private readonly deleteActionUseCase: DeleteActionUseCase,
   ) {}
 
@@ -64,16 +70,17 @@ export class ActionsController {
     @Body() body: CreateActionDto,
   ): Promise<ActionResponse> {
     const authUser = this.requireAuthUser(request);
-    const actionId = body.actionId ?? randomUUID();
+    const payload = validateDto(CreateActionDto, body);
+    const actionId = payload.actionId ?? randomUUID();
 
     const result = await this.createActionUseCase.execute({
       organizationId: authUser.organizationId,
       actorRole: authUser.role,
       actionId,
-      actionPlanId: body.actionPlanId,
+      actionPlanId: payload.actionPlanId,
       createdByUserId: authUser.userId,
-      title: body.title,
-      description: body.description,
+      title: payload.title,
+      description: payload.description,
     });
 
     return this.toResponse(result);
@@ -100,12 +107,13 @@ export class ActionsController {
     @Body() body: ActionTransitionDto,
   ): Promise<ActionResponse> {
     const authUser = this.requireAuthUser(request);
+    const payload = validateDto(ActionTransitionDto, body);
 
     const result = await this.startActionUseCase.execute({
       organizationId: authUser.organizationId,
       actorRole: authUser.role,
       actionId,
-      expectedVersion: body.expectedVersion,
+      expectedVersion: payload.expectedVersion,
     });
 
     return this.toResponse(result);
@@ -132,12 +140,13 @@ export class ActionsController {
     @Body() body: ActionTransitionDto,
   ): Promise<ActionResponse> {
     const authUser = this.requireAuthUser(request);
+    const payload = validateDto(ActionTransitionDto, body);
 
     const result = await this.requestValidationActionUseCase.execute({
       organizationId: authUser.organizationId,
       actorRole: authUser.role,
       actionId,
-      expectedVersion: body.expectedVersion,
+      expectedVersion: payload.expectedVersion,
     });
 
     return this.toResponse(result);
@@ -164,12 +173,13 @@ export class ActionsController {
     @Body() body: ActionTransitionDto,
   ): Promise<ActionResponse> {
     const authUser = this.requireAuthUser(request);
+    const payload = validateDto(ActionTransitionDto, body);
 
     const result = await this.completeActionUseCase.execute({
       organizationId: authUser.organizationId,
       actorRole: authUser.role,
       actionId,
-      expectedVersion: body.expectedVersion,
+      expectedVersion: payload.expectedVersion,
     });
 
     return this.toResponse(result);
@@ -196,12 +206,13 @@ export class ActionsController {
     @Query() query: ActionTransitionDto,
   ): Promise<ActionResponse> {
     const authUser = this.requireAuthUser(request);
+    const payload = validateDto(ActionTransitionDto, query);
 
     const result = await this.deleteActionUseCase.execute({
       organizationId: authUser.organizationId,
       actorRole: authUser.role,
       actionId,
-      expectedVersion: query.expectedVersion,
+      expectedVersion: payload.expectedVersion,
     });
 
     return this.toResponse(result);

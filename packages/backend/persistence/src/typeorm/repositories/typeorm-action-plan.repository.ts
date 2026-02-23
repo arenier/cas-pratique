@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 
 import { ActionPlan } from '@repo/backend/action-plans';
@@ -24,7 +24,7 @@ export class TypeOrmActionPlanRepository implements ActionPlanRepository {
    * Create a new TypeOrmActionPlanRepository.
    * @param dataSource DataSource for database access.
    */
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(@Inject(DataSource) private readonly dataSource: DataSource) {}
 
   /**
    * Fetch an action plan by organization and action plan identifiers.
