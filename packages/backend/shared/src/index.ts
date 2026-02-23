@@ -7,3 +7,4 @@ export * from './shared.module';
 export * from './tenancy/tenancy.guard';
 export * from './transactions/in-memory-transaction-runner';
 export * from './transactions/transaction-runner';
+export * from './validation/validate-dto';

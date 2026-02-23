@@ -1,19 +1,21 @@
 import 'reflect-metadata';
 
+import { randomUUID } from 'node:crypto';
+
 import { type INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { DataSource } from 'typeorm';
 import request from 'supertest';
-import { beforeAll, beforeEach, afterAll, describe, expect, it } from 'vitest';
+import { DataSource } from 'typeorm';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
 import { AuthGuard, DomainExceptionFilter, RolesGuard, TenancyGuard } from '@repo/backend/shared';
 
 import { AppModule } from '../src/app/app.module';
 
-const authHeaders = (overrides?: { userId?: string; orgId?: string; role?: string }) => ({
-  'x-user-id': overrides?.userId ?? 'admin-1',
-  'x-org-id': overrides?.orgId ?? 'org-1',
-  'x-role': overrides?.role ?? 'ADMIN',
+const authHeaders = (params: { userId: string; orgId: string; role?: string }) => ({
+  'x-user-id': params.userId,
+  'x-org-id': params.orgId,
+  'x-role': params.role ?? 'ADMIN',
 });
 
 type TestContext = {
@@ -27,14 +29,17 @@ const resetDatabase = async (dataSource: DataSource) => {
   );
 };
 
-const createAccount = async (app: INestApplication, overrides?: { orgId?: string }) => {
+const createAccount = async (
+  app: INestApplication,
+  params: { orgId: string; adminUserId: string },
+) => {
   const response = await request(app.getHttpServer())
     .post('/api/accounts')
-    .set(authHeaders({ orgId: overrides?.orgId ?? 'org-1' }))
+    .set(authHeaders({ orgId: params.orgId, userId: params.adminUserId }))
     .send({
       organizationName: 'Qualineo',
       adminEmail: 'admin@qualineo.test',
-      adminUserId: 'admin-1',
+      adminUserId: params.adminUserId,
     })
     .expect(201);
 
@@ -96,11 +101,26 @@ describe('Actions (db e2e)', () => {
   });
 
   it('creates an action plan and action, then starts the action', async () => {
-    await createAccount(context.app);
+    const orgHeaderId = randomUUID();
+    const adminUserId = randomUUID();
+    const organizationId = await createAccount(context.app, {
+      orgId: orgHeaderId,
+      adminUserId,
+    });
+    const adminHeaders = authHeaders({
+      orgId: organizationId,
+      userId: adminUserId,
+      role: 'ADMIN',
+    });
+    const managerHeaders = authHeaders({
+      orgId: organizationId,
+      userId: randomUUID(),
+      role: 'MANAGER',
+    });
 
     const actionPlanResponse = await request(context.app.getHttpServer())
       .post('/api/action-plans')
-      .set(authHeaders({ role: 'ADMIN' }))
+      .set(adminHeaders)
       .send({
         title: 'Plan',
         description: 'Plan description',
@@ -111,7 +131,7 @@ describe('Actions (db e2e)', () => {
 
     const actionResponse = await request(context.app.getHttpServer())
       .post('/api/actions')
-      .set(authHeaders({ role: 'MANAGER' }))
+      .set(managerHeaders)
       .send({
         actionPlanId,
         title: 'Action',
@@ -123,7 +143,7 @@ describe('Actions (db e2e)', () => {
 
     await request(context.app.getHttpServer())
       .post(`/api/actions/${actionId}/start`)
-      .set(authHeaders({ role: 'MANAGER' }))
+      .set(managerHeaders)
       .send({ expectedVersion: 1 })
       .expect(200)
       .expect((res) => {
@@ -133,11 +153,21 @@ describe('Actions (db e2e)', () => {
   });
 
   it('rejects concurrency conflicts', async () => {
-    await createAccount(context.app);
+    const orgHeaderId = randomUUID();
+    const adminUserId = randomUUID();
+    const organizationId = await createAccount(context.app, {
+      orgId: orgHeaderId,
+      adminUserId,
+    });
+    const adminHeaders = authHeaders({
+      orgId: organizationId,
+      userId: adminUserId,
+      role: 'ADMIN',
+    });
 
     const actionPlanResponse = await request(context.app.getHttpServer())
       .post('/api/action-plans')
-      .set(authHeaders({ role: 'ADMIN' }))
+      .set(adminHeaders)
       .send({
         title: 'Plan',
         description: 'Plan description',
@@ -148,7 +178,7 @@ describe('Actions (db e2e)', () => {
 
     const actionResponse = await request(context.app.getHttpServer())
       .post('/api/actions')
-      .set(authHeaders({ role: 'ADMIN' }))
+      .set(adminHeaders)
       .send({
         actionPlanId,
         title: 'Action',
@@ -160,12 +190,12 @@ describe('Actions (db e2e)', () => {
 
     await context.dataSource.query(
       'UPDATE actions SET version = 2 WHERE id = $1 AND organization_id = $2',
-      [actionId, 'org-1'],
+      [actionId, organizationId],
     );
 
     await request(context.app.getHttpServer())
       .post(`/api/actions/${actionId}/start`)
-      .set(authHeaders({ role: 'MANAGER' }))
+      .set(authHeaders({ orgId: organizationId, userId: randomUUID(), role: 'MANAGER' }))
       .send({ expectedVersion: 1 })
       .expect(409)
       .expect((res) => {
@@ -174,11 +204,21 @@ describe('Actions (db e2e)', () => {
   });
 
   it('isolates tenants', async () => {
-    await createAccount(context.app);
+    const orgHeaderId = randomUUID();
+    const adminUserId = randomUUID();
+    const organizationId = await createAccount(context.app, {
+      orgId: orgHeaderId,
+      adminUserId,
+    });
+    const adminHeaders = authHeaders({
+      orgId: organizationId,
+      userId: adminUserId,
+      role: 'ADMIN',
+    });
 
     const actionPlanResponse = await request(context.app.getHttpServer())
       .post('/api/action-plans')
-      .set(authHeaders({ role: 'ADMIN' }))
+      .set(adminHeaders)
       .send({
         title: 'Plan',
         description: 'Plan description',
@@ -189,7 +229,7 @@ describe('Actions (db e2e)', () => {
 
     const actionResponse = await request(context.app.getHttpServer())
       .post('/api/actions')
-      .set(authHeaders({ role: 'ADMIN' }))
+      .set(adminHeaders)
       .send({
         actionPlanId,
         title: 'Action',
@@ -201,7 +241,7 @@ describe('Actions (db e2e)', () => {
 
     await request(context.app.getHttpServer())
       .post(`/api/actions/${actionId}/start`)
-      .set(authHeaders({ orgId: 'org-2', role: 'MANAGER' }))
+      .set(authHeaders({ orgId: randomUUID(), userId: randomUUID(), role: 'MANAGER' }))
       .send({ expectedVersion: 1 })
       .expect(404)
       .expect((res) => {

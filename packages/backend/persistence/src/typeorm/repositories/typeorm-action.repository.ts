@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 
 import { Action } from '@repo/backend/actions';
@@ -28,7 +28,7 @@ export class TypeOrmActionRepository implements ActionRepository {
    * Create a new TypeOrmActionRepository.
    * @param dataSource DataSource for database access.
    */
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(@Inject(DataSource) private readonly dataSource: DataSource) {}
 
   /**
    * Fetch an action by organization and action identifiers.

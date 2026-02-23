@@ -2,12 +2,13 @@ import {
   Body,
   Controller,
   HttpCode,
+  Inject,
   Post,
   Req,
   UnauthorizedException,
 } from '@nestjs/common';
 
-import { Roles, type AuthenticatedRequest } from '@repo/backend/shared';
+import { Roles, type AuthenticatedRequest, validateDto } from '@repo/backend/shared';
 
 import { CreateAccountUseCase } from '../application/use-cases/create-account.use-case';
 import { InviteUserUseCase } from '../application/use-cases/invite-user.use-case';
@@ -33,7 +34,9 @@ export class OrganizationsController {
    * @param inviteUserUseCase Invite user use-case.
    */
   constructor(
+    @Inject(CreateAccountUseCase)
     private readonly createAccountUseCase: CreateAccountUseCase,
+    @Inject(InviteUserUseCase)
     private readonly inviteUserUseCase: InviteUserUseCase,
   ) {}
 
@@ -51,11 +54,12 @@ export class OrganizationsController {
     @Req() request: AuthenticatedRequest,
     @Body() body: CreateAccountDto,
   ): Promise<CreateAccountResponse> {
-    const adminUserId = this.resolveAdminUserId(request, body);
+    const payload = validateDto(CreateAccountDto, body);
+    const adminUserId = this.resolveAdminUserId(request, payload);
 
     return this.createAccountUseCase.execute({
-      organizationName: body.organizationName,
-      adminEmail: body.adminEmail,
+      organizationName: payload.organizationName,
+      adminEmail: payload.adminEmail,
       adminUserId,
     });
   }
@@ -78,13 +82,14 @@ export class OrganizationsController {
     @Body() body: InviteUserDto,
   ): Promise<InviteUserResponse> {
     const authUser = this.requireAuthUser(request);
+    const payload = validateDto(InviteUserDto, body);
 
     return this.inviteUserUseCase.execute({
       organizationId: authUser.organizationId,
       actorRole: authUser.role,
-      userId: body.userId,
-      email: body.email,
-      role: body.role,
+      userId: payload.userId,
+      email: payload.email,
+      role: payload.role,
     });
   }
 

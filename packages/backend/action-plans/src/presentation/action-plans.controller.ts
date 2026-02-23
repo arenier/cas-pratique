@@ -4,6 +4,7 @@ import {
   Body,
   Controller,
   HttpCode,
+  Inject,
   Param,
   Patch,
   Post,
@@ -11,7 +12,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
-import { Roles, type AuthenticatedRequest } from '@repo/backend/shared';
+import { Roles, type AuthenticatedRequest, validateDto } from '@repo/backend/shared';
 
 import { CreateActionPlanUseCase } from '../application/use-cases/create-action-plan.use-case';
 import { UpdateActionPlanDetailsUseCase } from '../application/use-cases/update-action-plan-details.use-case';
@@ -35,7 +36,9 @@ export class ActionPlansController {
    * @param updateActionPlanDetailsUseCase Update action plan use-case.
    */
   constructor(
+    @Inject(CreateActionPlanUseCase)
     private readonly createActionPlanUseCase: CreateActionPlanUseCase,
+    @Inject(UpdateActionPlanDetailsUseCase)
     private readonly updateActionPlanDetailsUseCase: UpdateActionPlanDetailsUseCase,
   ) {}
 
@@ -56,15 +59,16 @@ export class ActionPlansController {
     @Body() body: CreateActionPlanDto,
   ): Promise<CreateActionPlanResponse> {
     const authUser = this.requireAuthUser(request);
-    const actionPlanId = body.actionPlanId ?? randomUUID();
+    const payload = validateDto(CreateActionPlanDto, body);
+    const actionPlanId = payload.actionPlanId ?? randomUUID();
 
     const result = await this.createActionPlanUseCase.execute({
       actionPlanId,
       organizationId: authUser.organizationId,
       actorRole: authUser.role,
       createdByUserId: authUser.userId,
-      title: body.title,
-      description: body.description,
+      title: payload.title,
+      description: payload.description,
     });
 
     return result;
@@ -89,13 +93,14 @@ export class ActionPlansController {
     @Body() body: UpdateActionPlanDetailsDto,
   ): Promise<UpdateActionPlanResponse> {
     const authUser = this.requireAuthUser(request);
+    const payload = validateDto(UpdateActionPlanDetailsDto, body);
 
     const result = await this.updateActionPlanDetailsUseCase.execute({
       organizationId: authUser.organizationId,
       actorRole: authUser.role,
       actionPlanId,
-      title: body.title,
-      description: body.description,
+      title: payload.title,
+      description: payload.description,
     });
 
     return result;

@@ -1,6 +1,6 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { DataSource, type EntityManager } from 'typeorm';
 
 import type { TransactionRunner } from '@repo/backend/shared';
@@ -21,7 +21,7 @@ export class TypeOrmTransactionRunner implements TransactionRunner {
    * Create a new TypeOrmTransactionRunner.
    * @param dataSource DataSource for transactions.
    */
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(@Inject(DataSource) private readonly dataSource: DataSource) {}
 
   /**
    * Execute a callback inside a database transaction.

@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import type { DataSource } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 
 import type { OrganizationRepository } from '@repo/backend/organizations';
 import { Organization } from '@repo/backend/organizations';
@@ -21,7 +21,7 @@ export class TypeOrmOrganizationRepository implements OrganizationRepository {
    * Create a new TypeOrmOrganizationRepository.
    * @param dataSource DataSource for database access.
    */
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(@Inject(DataSource) private readonly dataSource: DataSource) {}
 
   /**
    * Fetch an organization by identifier.
